@@ -1,0 +1,23 @@
+{
+  "name": "tayartak",
+  "version": "1.0.0",
+  "description": "a reliable flight ticket react app ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mico52000/Tayartak.git"
+  },
+  "author": "Michael George",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mico52000/Tayartak/issues"
+  },
+  "homepage": "https://github.com/Mico52000/Tayartak#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^6.0.12"
+  }
+}
