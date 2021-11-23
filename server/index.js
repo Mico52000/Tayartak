@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const App = express();
 const mongoose = require('mongoose');
@@ -6,7 +7,9 @@ const cors = require('cors');
 App.use(express.json());
 App.use(cors());
 
-mongoose.connect("mongodb+srv://Admin:Admin@cluster0.1qsne.mongodb.net/Tayartak",{useNewUrlParser: true});
+
+console.log(process.env.MONGO_LINK);
+mongoose.connect(process.env.MONGO_LINK,{useNewUrlParser: true});
 
 
 
@@ -20,23 +23,24 @@ App.post('/insert',async (req,res)=> {
 
     const flight = new Flightmodel({From :from,To :to ,Date :date,Cabin :cabin, Seats_Available_on_Flight:seats});
     await flight.save();
-    res.send("wooho");
    
 }
 );
 
 App.get('/search',async(req,res)=>{
-    const flight = {
-        From :req.query.From,
-        To :req.query.To,
-        Cabin : req.query.Cabin,
-        FlightDate : req.query.Date,
-        FlightNumber: req.query.FlightNum,
-        NumberOfEconomySeats: req.query.ecoseats,
-        NumberOfBusinessSeats : req.query.bisseats,
-        NumberOfFirstSeats : req.query.firstseats,
+    // const flight = {
+    //     From :req.query.From,
+    //     To :req.query.To,
+    //     Cabin : req.query.Cabin,
+    //     FlightDate : req.query.Date,
+    //     FlightNumber: req.query.FlightNum,
+    //     NumberOfEconomySeats: req.query.Ecoseats,
+    //     NumberOfBusinessSeats : req.query.Bisseats,
+    //     NumberOfFirstSeats : req.query.Firstseats,
 
-    }
+    // }
+    const flight = req.query;
+    delete flight.data;
     Object.keys(flight).forEach(key => {
         if (flight[key] == null || flight[key]=='') {
           delete flight[key];
