@@ -6,12 +6,14 @@ const Flightmodel = require('./models/Flights');
 const cors = require('cors');
 App.use(express.json());
 App.use(cors());
+const port = process.env.PORT || 8000;
 
 
-console.log(process.env.MONGO_LINK);
 mongoose.connect(process.env.MONGO_LINK,{useNewUrlParser: true});
 
-
+App.listen(port, () => {
+  console.log("You are connected!")
+});
 
 
 App.post('/insert',async (req,res)=> {
