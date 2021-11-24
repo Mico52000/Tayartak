@@ -14,7 +14,6 @@ export default class Home extends Component {
     render(){
       return (
         <div className="Home">
-        <NavBar/>
           
             <h2>Welcome to the homepage!</h2>
             

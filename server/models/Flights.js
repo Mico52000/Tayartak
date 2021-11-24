@@ -48,4 +48,4 @@ const FlightSchema = new mongoose.Schema({
 
 
 const FlightModel = mongoose.model('flights',FlightSchema)
-module.exports = FlightModel
+module.exports = FlightModel;
