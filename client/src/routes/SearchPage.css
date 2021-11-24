@@ -1,0 +1,48 @@
+.SearchPage {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  align-items: center;
+  height : 100vh;
+  
+}
+body{
+  margin: 0;
+  padding: 0;
+  background-color: white;
+}
+.inputs {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height : 400 px;
+  width: 70%;
+  background-color: #189AB4;
+  border-radius: 20px;
+ 
+  
+}
+.inputs input {
+  margin: 10px;
+  border-radius: 8px;
+  padding-left: 5px;
+  font-size: large;
+  height: 50px;
+  width: 270px;
+  outline: 0;
+  border: none;
+  
+}
+.list{
+  display: flex;
+  justify-content:space-around;
+  flex-direction: row;
+  align-items: center;
+  
+}
+input:active, input:focus {
+  outline: 0;
+  border: none;
+  -moz-outline-style: none;
+}
