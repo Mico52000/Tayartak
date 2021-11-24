@@ -1,5 +1,5 @@
 
-import './SearchPage.css';
+import './Search.css';
 import {Component} from  'react';
 import NavBar from '../Components/NavBar.js'
 import CardList from '../Components/CardList.js';
