@@ -1,7 +1,5 @@
-
 import './Search.css';
 import {Component} from  'react';
-import NavBar from '../Components/NavBar.js'
 import CardList from '../Components/CardList.js';
 import Axios from 'axios';
 import 'tachyons';
@@ -27,18 +25,19 @@ export default class SearchPage extends Component {
   }
 
   buttonClick(e){
-    // Axios.post("http://localhost:8000/insert",this.state).then(()=>alert('success')).catch((err) => alert(err));
+    
     e.preventDefault();
     Axios.get("http://localhost:8000/search",{
       params: this.state
     }).then((resp)=>{this.setState({data : resp.data})}).catch((err)=> alert(err));
+
+    // Axios.post("http://localhost:8000/addflight",this.state).then(()=>alert('success')).catch((err) => alert(err));
 
   }
 
   render(){
     return (
     <div className="SearchPage">
-      <NavBar/>
       <div className="inputs tc">
      <input type ="text" placeholder = "From" onChange={(event) => this.setState({From : event.target.value})}></input>
      <input type ="text" placeholder = "To" onChange={(event) => this.setState({To: event.target.value})}></input>
