@@ -8,7 +8,7 @@ export default class Card extends Component{
         const {From,To,Date,Flightnum,ecoseats,bisseats,firstseats,arrivalt,departuret} = this.props
     return(
 
-        <div className=" cardbg tc bg-blue  dib br3 ma2 pa3 grow shadow-5 w5 ">
+        <div className=" cardbg tc bg-blue  dib br3 ma2 pa3  shadow-5 w5 ">
             
             <h3>From : {From}</h3>
             <h3>To : {To}</h3>
@@ -19,6 +19,7 @@ export default class Card extends Component{
             <h3>  First class seats available : {firstseats}</h3>
             <h2>Departure : {departuret}</h2>
             <h2>Arrival : {arrivalt}</h2>
+            <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" href ='/update'>Update</a>
             
             
         </div>

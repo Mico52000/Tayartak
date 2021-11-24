@@ -6,6 +6,7 @@ import Home from './routes/Home.js'
 import AddFlight from './routes/AddFlight.js'
 import NavBar from './Components/NavBar.js'
 
+
 export default class App extends Component {
 
 
@@ -18,6 +19,7 @@ export default class App extends Component {
           <Route path="/" element={<Home />} />
           <Route path="/search" element={<Search />} />
           <Route path="/addflight" element={<AddFlight />} />
+          {/* <Route path="/update" element={<Update />} /> */}
         </Routes>
 
 
