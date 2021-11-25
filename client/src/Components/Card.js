@@ -44,7 +44,7 @@ export default class Card extends Component{
             <h2>Arrival : {arrivalt}</h2>
             
             
-
+            <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" href ={`/update/${ObjectId}`} >Update</a>        
             <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" onClick={(event) =>this.buttonClick(ObjectId,event)}>Delete</a>
           {/* //  <a class ="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" onClick ={() =>{var result = window.confirm("Want to delete?"); */}
 {/* if (result) {
