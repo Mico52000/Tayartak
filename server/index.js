@@ -35,6 +35,29 @@ App.post('/addflight', async (req, res) => {
   await flight.save();
 });
 
+App.delete("/delete/:id",async (req,res) =>{
+  console.log(req.params.id);
+  var id =req.params.id;
+  id =mongoose.Types.ObjectId(id);
+  var myquery = { _id: id };
+ 
+try{
+ 
+ await Flightmodel.deleteOne(myquery),function(err,docs){
+     if(err) throw err;
+     if(docs){
+         console.log("true");
+     }
+ };
+ res.send("item deleted");
+}
+catch(error){
+ console.log(error);
+}
+
+ 
+} );
+
 App.get('/search', async (req, res) => {
   // const flight = {
   //     From :req.query.From,
@@ -62,4 +85,4 @@ App.get('/search', async (req, res) => {
       res.send(result);
     }
   })
-})
+});
