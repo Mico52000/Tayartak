@@ -34,7 +34,30 @@ App.post('/addflight', async (req, res) => {
 
   await flight.save();
 });
-
+App.put('/update',async(req,res)=>{
+  console.log("linah");
+  const flight=req.body;
+  console.log(flight);
+          Object.keys(flight).forEach(key => {
+              if (flight[key] == null || flight[key]==""||flight[key]==0) {
+                delete flight[key];
+              }
+            });
+ var num =mongoose.Types.ObjectId(flight._id);
+  //console.log(num);
+  const nid= {_id:num};
+  try{
+      
+        await Flightmodel.updateOne(nid,flight);
+          
+         res.send("Updated!");
+        
+          
+    }catch(err){
+      console.log(err);
+  }
+ 
+});
 App.delete("/delete/:id",async (req,res) =>{
   console.log(req.params.id);
   var id =req.params.id;
