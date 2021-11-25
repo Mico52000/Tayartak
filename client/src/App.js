@@ -5,7 +5,7 @@ import Search from './routes/Search.js'
 import Home from './routes/Home.js'
 import AddFlight from './routes/AddFlight.js'
 import NavBar from './Components/NavBar.js'
-
+import DisplayAll from './routes/DisplayAll.js'
 
 export default class App extends Component {
 
@@ -19,6 +19,7 @@ export default class App extends Component {
           <Route path="/" element={<Home />} />
           <Route path="/search" element={<Search />} />
           <Route path="/addflight" element={<AddFlight />} />
+          <Route path ='/displayall' element = {<DisplayAll/>}/>
           {/* <Route path="/update" element={<Update />} /> */}
         </Routes>
 
