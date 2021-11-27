@@ -31,7 +31,7 @@ export default class Card extends Component{
         const {ObjectId,From,To,Date,Flightnum,ecoseats,bisseats,firstseats,arrivalt,departuret} = this.props
     return(
           
-        <div className=" cardbg tc bg-blue  dib br3 ma2 pa3 grow shadow-5 w5 ">
+        <div className=" cardbg tc bg-blue  dib br3 ma2 pa3  shadow-5 w5 ">
             
             <h3>From : {From}</h3>
             <h3>To : {To}</h3>
