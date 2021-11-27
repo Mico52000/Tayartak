@@ -14,15 +14,16 @@ export default class Card extends Component{
     this.render= this.render.bind(this);
     }
     
-    buttonClick(Id,e){
+    buttonClick(Id){
         // Axios.post("http://localhost:8000/insert",this.state).then(()=>alert('success')).catch((err) => alert(err));
-        //e.preventDefault();
+        
         var result = window.confirm("Are you sure you want to delete this flight?");
          if (result) {
         Axios.delete(`http://localhost:8000/delete/${Id}`
         );
+        window.location.reload(false);
         console.log(Id);
-       // this.forceUpdate();
+    
       }
     }
        
