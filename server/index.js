@@ -9,7 +9,8 @@ App.use(cors());
 const port = process.env.PORT || 8000;
 
 
-mongoose.connect(process.env.MONGO_LINK, { useNewUrlParser: true });
+mongoose.connect(process.env.MONGO_LINK, { useNewUrlParser: true }).then(result =>console.log("MongoDB is now connected") )
+.catch(err => console.log(err));
 
 App.listen(port, () => {
   console.log("You are connected!")
