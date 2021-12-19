@@ -1,0 +1,8 @@
+.seatPicker{
+    margin-top: 0px;
+    display: flex;
+    justify-content:center;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap ;
+  }

@@ -1,5 +1,15 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
+
+const Seat = new mongoose.Schema({
+    type: Object,
+    id : Number,
+    number: Number,
+    isReserved: { type: Boolean, default: false },
+    Cost : Number,
+
+    
+});
 const FlightSchema = new mongoose.Schema({
    
     FlightDate :{
@@ -40,7 +50,9 @@ const FlightSchema = new mongoose.Schema({
     },
     DepartureTime :{
         type : String
-    }
+    },
+    
+    Seats : [[Seat]],
    
 });
 									

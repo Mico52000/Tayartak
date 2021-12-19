@@ -15,6 +15,7 @@ import AdminUpdate from './routes/admin/Update.js'
 
 
 import UserHome from './routes/user/Home.js'
+import FlightSeatPickerParent from './routes/user/FlightSeatPickerParent.js';
 
 export default class App extends Component {
 
@@ -47,6 +48,7 @@ export default class App extends Component {
           <UserNavBar />
           <Routes>
             <Route path="/home" element={<UserHome />} />
+            <Route path="/pickseats/:booking" element={<FlightSeatPickerParent/>} />
           </Routes>
 
         </div>
