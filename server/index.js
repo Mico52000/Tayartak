@@ -32,7 +32,15 @@ App.post('/addflight', async (req, res) => {
     DepartureTime: reqbody.DepartureTime
   });
 
-  await flight.save();
+  try{
+    await flight.save();
+    res.send("Inserted!");
+  }catch(err){
+    console.log(err);
+}
+  
+
+
 });
 App.put('/update',async(req,res)=>{
   console.log("linah");
@@ -58,6 +66,8 @@ App.put('/update',async(req,res)=>{
   }
  
 });
+
+
 App.delete("/delete/:id",async (req,res) =>{
   console.log(req.params.id);
   var id =req.params.id;
