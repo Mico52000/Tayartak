@@ -1,7 +1,6 @@
 import 'tachyons';
 import './Home.css';
 import {Component} from  'react';
-import NavBar from '../Components/NavBar.js'
 
 export default class Home extends Component {
     constructor(){
@@ -15,8 +14,10 @@ export default class Home extends Component {
       return (
         <div className="Home">
           
-            <h2>Welcome to the homepage!</h2>
+            <h2>Welcome to user's the homepage!</h2>
             
+          
+    
         </div>
       );
   }

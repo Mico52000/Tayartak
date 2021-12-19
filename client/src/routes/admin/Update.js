@@ -2,10 +2,10 @@ import {useState,useEffect} from "react";
 import Axios from 'axios';
 import './Update.css';
 import {Component} from  'react';
-import NavBar from '../Components/NavBar.js'
-import  Card from '../Components/Card.js';
 import 'tachyons';
 import { useParams } from 'react-router-dom';
+
+
 function Update() {
     const { id } = useParams();
     console.log(id);
@@ -47,7 +47,7 @@ function Update() {
             <input type="Text" placeholder="DepartureTime" onChange={(event)=>{setDepartureTime(event.target.value)}}/>
             {/* <button onClick={()=>{updateFlight(id)}}> Save</button> */}
             <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" onClick={()=>{updateFlight(id)}}  >Update</a>        
-            <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" href ={'/displayall'}  >Back</a>    
+            <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" href ={'/admin/displayall'}  >Back</a>    
 
             {/* <button onClick={()=>{updateFlight(id)}}> </button></div> */}
             </div>  
