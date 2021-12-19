@@ -1,8 +1,8 @@
 import { Component } from 'react';
 import 'tachyons';
 import Axios from 'axios';
-import CardList from '../Components/CardList.js';
-import NavBar from '../Components/NavBar.js'
+import CardList from '../../Components/admin/CardList.js';
+import './DisplayAll.css';
 
 export default class DisplayAll extends Component{
     constructor(){
@@ -22,7 +22,7 @@ export default class DisplayAll extends Component{
 
     render(){
         return (
-            <div>
+            <div className='dlist'>
                 <CardList flights = {this.state.data}/>
             </div>
             

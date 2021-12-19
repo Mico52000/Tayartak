@@ -7,7 +7,7 @@ export default class CardList extends Component{
     render(){
         const {flights} = this.props;
         const components = flights.map((flight,i) => {
-            return <Card From={flight.From} To ={flight.To}  Date={flight.FlightDate} Flightnum={flight.FlightNumber} ecoseats ={flight.NumberOfEconomySeats}
+            return <Card  From={flight.From} To ={flight.To}  Date={flight.FlightDate} Flightnum={flight.FlightNumber} ecoseats ={flight.NumberOfEconomySeats}
              bisseats = {flight.NumberOfBusinessSeats} firstseats = {flight.NumberOfFirstSeats} arrivalt = {flight.ArrivalTime} departuret = {flight.DepartureTime} 
              ObjectId ={flight._id} 
              />});
@@ -18,5 +18,7 @@ export default class CardList extends Component{
            
             <Fragment>{components}</Fragment>
         )
+           
+           
     }
 }

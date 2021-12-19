@@ -1,6 +1,6 @@
 import './Search.css';
 import {Component} from  'react';
-import CardList from '../Components/CardList.js';
+import CardList from '../../Components/admin/CardList.js';
 import Axios from 'axios';
 import 'tachyons';
 
