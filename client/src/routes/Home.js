@@ -17,8 +17,6 @@ export default class Home extends Component {
           
             <h2>Welcome to the homepage!</h2>
             
-          
-    
         </div>
       );
   }

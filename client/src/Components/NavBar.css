@@ -2,6 +2,7 @@ input:active, input:focus {
     outline: 0;
     border: none;
     -moz-outline-style: none;
+    
   }
 
 .navbarbg{
@@ -14,4 +15,8 @@ input:active, input:focus {
   justify-content: flex-start;
   flex-direction: column;
   align-items: center;
+
+  /* to make the navbar on top of the display stack */
+  position: relative;
+  z-index: 50;
 }

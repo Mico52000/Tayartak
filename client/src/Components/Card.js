@@ -32,6 +32,7 @@ export default class Card extends Component{
         const {ObjectId,From,To,Date,Flightnum,ecoseats,bisseats,firstseats,arrivalt,departuret} = this.props
     return(
           
+      
         <div className=" cardbg tc bg-blue  dib br3 ma2 pa3  shadow-5 w5 ">
             
             <h3>From : {From}</h3>
@@ -44,9 +45,9 @@ export default class Card extends Component{
             <h2>Departure : {departuret}</h2>
             <h2>Arrival : {arrivalt}</h2>
             
+            <a class=" f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue " href ={`/update/${ObjectId}`} >Update</a>        
+            <a class=" f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue " onClick={(event) =>this.buttonClick(ObjectId,event)}>Delete</a>
             
-            <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" href ={`/update/${ObjectId}`} >Update</a>        
-            <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" onClick={(event) =>this.buttonClick(ObjectId,event)}>Delete</a>
           {/* //  <a class ="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" onClick ={() =>{var result = window.confirm("Want to delete?"); */}
 {/* if (result) {
     //Logic to delete the item
@@ -65,6 +66,7 @@ export default class Card extends Component{
               
             
         </div>
+       
     )
     }
 }
