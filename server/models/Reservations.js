@@ -19,10 +19,14 @@ UserId :{
 
       type : Number
   },
-  Seats :{
-
-      type : String
-  }
+  Cabin : {
+      type: String
+  },
+  Price : {
+      type : Number
+  },
+  SeatsDep : [],
+  SeatsRet:[],
   
 });
                                   

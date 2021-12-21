@@ -1,6 +1,9 @@
+
 import {Component} from  'react';
 import SeatPicker from '../../Components/user/SeatPick/index.js'
+import Axios from 'axios';
 import './FlightSeatPicker.css'
+import Button from '@mui/material/Button';
 
 
 export default class FlightSeatPicker extends Component {
@@ -12,23 +15,136 @@ export default class FlightSeatPicker extends Component {
     }
     state = {
         loading: false,
-        MaxSeats:3
+        MaxSeats:3,
+        ReservationCabin:"",
+        DepFlightId: "",
+        RetFlightId:"",
+        DatabaserowsDep:[],
+        DatabaserowsRet:[],
+        DepRows : [],
+        retRows :[],
+        DepSeats : [],
+        retSeats : []
       }
      
-    
+    componentDidMount(){
+        const {bookingNumber} = this.props;
+        Axios.get("http://localhost:8000/searchReservation",{
+            params: {resid:bookingNumber}
+          }).then((resp)=>{this.setState({MaxSeats: resp.data.NumSeats,DepFlightId : resp.data.DepFlight,RetFlightId:resp.data.RetFlight});
+           this.generateRows(resp.data.DepFlight,resp.data.RetFlight);
+           this.setState({ReservationCabin : resp.data.Cabin})
+          }).catch((err)=> alert(err));
+           
+    };
+
+    generateRows = ( depFlight,  retFlight) =>{
+        Axios.get("http://localhost:8000/searchflightbyId",{
+      params: {flightid:depFlight}
+      
+    }).then((resp)=>{
+      
+        this.setState({DatabaserowsDep:resp.data.seats})
+        var seats = resp.data.seats;
+        var rows = [];
+       for(let i=0;i<seats.length;i++){
+           var row = [];
+        seats[i].forEach(element => {
+          if(element==null)
+          row.push(null)
+          else{
+            console.log(element.Cabin.localeCompare(this.state.ReservationCabin));
+            var seat ={
+              id:element.id,
+              number: element.number,
+              isReserved: element.isReserved,
+              isWrongCabin:(element.Cabin.localeCompare(this.state.ReservationCabin)==0)? false : true,
+              tooltip: (element.Cabin.localeCompare(this.state.ReservationCabin)==0 || (element.isReserved ==true))? "": "You did not reserve this Cabin class",
+              Cabin:element.Cabin,
+
+
+          }
+          row.push(seat);
+          }
+        });
+        rows.push(row);
+        
+
+       }
+       this.setState({DepRows:rows});
+    }).catch((err)=> alert(err));
+
+
+
+    Axios.get("http://localhost:8000/searchflightbyId",{
+      params: {flightid:retFlight}
+      
+    }).then((resp)=>{
+      
+        this.setState({DatabaserowsRet:resp.data.seats})
+        var seats = resp.data.seats;
+        var rows = [];
+       for(let i=0;i<seats.length;i++){
+           var row = [];
+        seats[i].forEach(element => {
+          if(element==null)
+          row.push(null)
+          else{
+            var seat ={
+              id:element.id,
+              number: element.number,
+              isReserved: element.isReserved,
+              isWrongCabin:(element.Cabin.localeCompare(this.state.ReservationCabin)==0)? false : true,
+              tooltip: (element.Cabin.localeCompare(this.state.ReservationCabin)==0 || (element.isReserved ==true))  ? "": "You did not reserve this Cabin class",
+              Cabin:element.Cabin,
+
+
+
+          }
+          row.push(seat);
+          }
+        });
+        rows.push(row);
+        
+
+       }
+       this.setState({retRows:rows});
+    }).catch((err)=> alert(err));
+
+
+    };
     addSeatCallback = ({ row, number, id }, addCb) => {
         this.setState({
           loading: true
         }, async () => {
           await new Promise(resolve => setTimeout(resolve, 1500))
-          console.log(`Added seat ${number}, row ${row}, id ${id}`)
-          const newTooltip = `tooltip for id-${id} added by callback`
+          const newTooltip = ""
           addCb(row, number, id, newTooltip)
           this.setState({ loading: false })
         })
       }
      
-      addSeatCallbackContinousCase = ({ row, number, id }, addCb, params, removeCb) => {
+      addSeatCallbackContinousCaseDep = ({ row, number, id }, addCb, params, removeCb) => {
+        this.setState({
+          loading: true
+        }, async () => {
+          if (removeCb) {
+            await new Promise(resolve => setTimeout(resolve, 750))
+           
+            removeCb(params.row, params.number)
+            this.setState({DepSeats :  this.state.DepSeats.filter(function(f) { return f !== params.id })});
+            console.log(this.state.DepSeats);
+          }
+          await new Promise(resolve => setTimeout(resolve, 750))
+          console.log(`Added seat ${number}, row ${row}, id ${id}`)
+          const newTooltip = ``
+          addCb(row, number, id, newTooltip);
+          this.setState({DepSeats :  this.state.DepSeats.concat([id])});
+          this.setState({ loading: false })
+          console.log(this.state.DepSeats);
+        })
+      }
+      addSeatCallbackContinousCaseRet = ({ row, number, id }, addCb, params, removeCb) => {
         this.setState({
           loading: true
         }, async () => {
@@ -36,16 +152,20 @@ export default class FlightSeatPicker extends Component {
             await new Promise(resolve => setTimeout(resolve, 750))
             console.log(`Removed seat ${params.number}, row ${params.row}, id ${params.id}`)
             removeCb(params.row, params.number)
+            this.setState({retSeats :  this.state.retSeats.filter(function(f) { return f !== params.id })});
+            console.log(this.state.DepSeats);
           }
           await new Promise(resolve => setTimeout(resolve, 750))
-          console.log(`Added seat ${number}, row ${row}, id ${id}`)
-          const newTooltip = `tooltip for id-${id} added by callback`
-          addCb(row, number, id, newTooltip)
+          
+          const newTooltip = ``
+          addCb(row, number, id, newTooltip);
+          this.setState({retSeats :  this.state.retSeats.concat([id])});
           this.setState({ loading: false })
+          console.log(this.state.retSeats);
         })
       }
      
-      removeSeatCallback = ({ row, number, id }, removeCb) => {
+      removeSeatCallbackDep = ({ row, number, id }, removeCb) => {
         this.setState({
           loading: true
         }, async () => {
@@ -54,42 +174,124 @@ export default class FlightSeatPicker extends Component {
           // A value of null will reset the tooltip to the original while '' will hide the tooltip
           const newTooltip = ['A', 'B', 'C'].includes(row) ? null : ''
           removeCb(row, number, newTooltip)
+          this.setState({DepSeats :  this.state.DepSeats.filter(function(f) { return f !== id })});
           this.setState({ loading: false })
         })
       }
+      removeSeatCallbackRet = ({ row, number, id }, removeCb) => {
+        this.setState({
+          loading: true
+        }, async () => {
+          await new Promise(resolve => setTimeout(resolve, 1500))
+          console.log(`Removed seat ${number}, row ${row}, id ${id}`)
+          // A value of null will reset the tooltip to the original while '' will hide the tooltip
+          const newTooltip = ['A', 'B', 'C'].includes(row) ? null : ''
+          this.setState({retSeats :  this.state.retSeats.filter(function(f) { return f !== id })});
+          removeCb(row, number, newTooltip)
+          this.setState({ loading: false })
+        })
+      }
+      departureSeatsClick =(e) => {
+        if(this.state.DepSeats.length!=this.state.MaxSeats)
+            {
+              alert(`Please select ${this.state.MaxSeats} for the departure flight`);
+              return
+              
+            }
+        const {bookingNumber} = this.props;
+        Axios.put("http://localhost:8000/updateResDep",{
+          _id : bookingNumber,
+          SeatsDep:this.state.DepSeats}).then(()=>{
+          alert("Flight Updated");
+        
+      });
+      
+
+      var databaserowsnew = this.state.DatabaserowsDep
+      for(let i=0;i<databaserowsnew.length;i++){
+        databaserowsnew[i].forEach(element => {
+       if(element!=null){
+         if(this.state.DepSeats.includes(element.id))
+         {
+           element.isReserved=true;
+           
+         }
+        }
+     });
+      };
+      
+      this.setState({DatabaserowsDep:databaserowsnew});
+      const flight={
+        _id:this.state.DepFlightId,
+        Seats:this.state.DatabaserowsDep
+      }
+      Axios.put("http://localhost:8000/updateseats",flight).then(()=>{
+          
+      });
+
+
+
+
+      window.location.reload(false);
+
+    };
+
+
+      returnSeatsClick =(e) => {
+        if(this.state.retSeats.length!=this.state.MaxSeats)
+            {
+              alert(`Please select ${this.state.MaxSeats} for the return flight`);
+              return
+              
+            }
+        const {bookingNumber} = this.props;
+        Axios.put("http://localhost:8000/updateResRet",{
+          _id : bookingNumber,
+          SeatsRet:this.state.retSeats}).then(()=>{
+          alert("Flight Updated");
+      });
+
+      var databaserowsnew = this.state.DatabaserowsRet
+      for(let i=0;i<databaserowsnew.length;i++){
+        databaserowsnew[i].forEach(element => {
+       if(element!=null){
+         if(this.state.retSeats.includes(element.id))
+         {
+           element.isReserved=true;
+           
+         }
+        }
+     });
+      };
+      
+      this.setState({DatabaserowsRet:databaserowsnew});
+      const flight={
+        _id:this.state.RetFlightId,
+        Seats:this.state.DatabaserowsRet
+      }
+      Axios.put("http://localhost:8000/updateseats",flight).then(()=>{
+          
+      });
+
+
+
+
+      window.location.reload(false);
+
+
+      };
      
       render() {
-        const {bookingNumber} = this.props;
-        
-        const rows = [ 
-          [{id: 1, number: 1, isSelected: true, tooltip: 'Reserved by you'}, {id: 2, number: 2, tooltip: 'Cost: 15$'}, null, {id: 3, number: '3', isReserved: true, orientation: 'east', tooltip: 'Reserved by Rogger'}, {id: 4, number: '4', orientation: 'west'}, null, {id: 5, number: 5}, {id: 6, number: 6}],
-          [{id: 7, number: 1, isReserved: true, tooltip: 'Reserved by Matthias Nadler'}, {id: 8, number: 2, isReserved: true}, null, {id: 9, number: '3', isReserved: true, orientation: 'east'}, {id: 10, number: '4', orientation: 'west'}, null, {id: 11, number: 5}, {id: 12, number: 6}],
-          [{id: 13, number: 1}, {id: 14, number: 2}, null, {id: 15, number: 3, isReserved: true, orientation: 'east'}, {id: 16, number: '4', orientation: 'west'}, null, {id: 17, number: 5}, {id: 18, number: 6}],
-          [{id: 19, number: 1, tooltip: 'Cost: 25$'}, {id: 20, number: 2}, null, {id: 21, number: 3, orientation: 'east'}, {id: 22, number: '4', orientation: 'west'}, null, {id: 23, number: 5}, {id: 24, number: 6}],
-          [{id: 25, number: 1, isReserved: true}, {id: 26, number: 2, orientation: 'east'}, null, {id: 27, number: '3', isReserved: true}, {id: 28, number: '4', orientation: 'west'}, null,{id: 29, number: 5, tooltip: 'Cost: 11$'}, {id: 30, number: 6, isReserved: true}],
-          [{id: 25, number: 1, isReserved: true}, {id: 26, number: 2, orientation: 'east'}, null, {id: 27, number: '3', isReserved: true}, {id: 28, number: '4', orientation: 'west'}, null,{id: 29, number: 5, tooltip: 'Cost: 11$'}, {id: 30, number: 6, isReserved: true}],
-          [{id: 25, number: 1, isReserved: true}, {id: 26, number: 2, orientation: 'east'}, null, {id: 27, number: '3', isReserved: true}, {id: 28, number: '4', orientation: 'west'}, null,{id: 29, number: 5, tooltip: 'Cost: 11$'}, {id: 30, number: 6, isReserved: true}],
-          [{id: 25, number: 1, isReserved: true}, {id: 26, number: 2, orientation: 'east'}, null, {id: 27, number: '3', isReserved: true}, {id: 28, number: '4', orientation: 'west'}, null,{id: 29, number: 5, tooltip: 'Cost: 11$'}, {id: 30, number: 6, isReserved: true}],
-          [{id: 25, number: 1, isReserved: true}, {id: 26, number: 2, orientation: 'east'}, null, {id: 27, number: '3', isReserved: true}, {id: 28, number: '4', orientation: 'west'}, null,{id: 29, number: 5, tooltip: 'Cost: 11$'}, {id: 30, number: 6, isReserved: true}],
-          [{id: 25, number: 1, isReserved: true}, {id: 26, number: 2, orientation: 'east'}, null, {id: 27, number: '3', isReserved: true}, {id: 28, number: '4', orientation: 'west'}, null,{id: 29, number: 5, tooltip: 'Cost: 11$'}, {id: 30, number: 6, isReserved: true}],
-          [{id: 25, number: 1, isReserved: true}, {id: 26, number: 2, orientation: 'east'}, null, {id: 27, number: '3', isReserved: true}, {id: 28, number: '4', orientation: 'west'}, null,{id: 29, number: 5, tooltip: 'Cost: 11$'}, {id: 30, number: 6, isReserved: true}],
-          [{id: 25, number: 1, isReserved: true}, {id: 26, number: 2, orientation: 'east'}, null, {id: 27, number: '3', isReserved: true}, {id: 28, number: '4', orientation: 'west'}, null,{id: 29, number: 5, tooltip: 'Cost: 11$'}, {id: 30, number: 6, isReserved: true}],
-          [{id: 25, number: 1, isReserved: true}, {id: 26, number: 2, orientation: 'east'}, null, {id: 27, number: '3', isReserved: true}, {id: 28, number: '4', orientation: 'west'}, null,{id: 29, number: 5, tooltip: 'Cost: 11$'}, {id: 30, number: 6, isReserved: true}],
-          [{id: 25, number: 1, isReserved: true}, {id: 26, number: 2, orientation: 'east'}, null, {id: 27, number: '3', isReserved: true}, {id: 28, number: '4', orientation: 'west'}, null,{id: 29, number: 5, tooltip: 'Cost: 11$'}, {id: 30, number: 6, isReserved: true}],
-          [{id: 25, number: 1, isReserved: true}, {id: 26, number: 2, orientation: 'east'}, null, {id: 27, number: '3', isReserved: true}, {id: 28, number: '4', orientation: 'west'}, null,{id: 29, number: 5, tooltip: 'Cost: 11$'}, {id: 30, number: 6, isReserved: true}],
-          [{id: 25, number: 1, isReserved: true}, {id: 26, number: 2, orientation: 'east'}, null, {id: 27, number: '3', isReserved: true}, {id: 28, number: '4', orientation: 'west'}, null,{id: 29, number: 5, tooltip: 'Cost: 11$'}, {id: 30, number: 6, isReserved: true}],
-          
-        ]
-        const {loading} = this.state
+        const {DepRows,retRows,loading} = this.state;
+        console.log(DepRows);
         return (
-          <div>
-      <h1>this is {bookingNumber}  </h1>
-            <h1>Seat Picker</h1>
+          <div className='Container'> 
+      <h1>Departure flight seat Picker </h1>
             <div className='seatPicker'>
-              <SeatPicker
-                addSeatCallback={this.addSeatCallbackContinousCase}
-                removeSeatCallback={this.removeSeatCallback}
-                rows={rows}
+              <SeatPicker key={this.state.DepRows}
+                addSeatCallback={this.addSeatCallbackContinousCaseDep}
+                removeSeatCallback={this.removeSeatCallbackDep}
+                rows={DepRows}
                 maxReservableSeats={this.state.MaxSeats}
                 alpha
                 visible
@@ -99,6 +301,29 @@ export default class FlightSeatPicker extends Component {
                 continuous
               />
             </div>
+
+
+            <Button variant="contained" onClick={this.departureSeatsClick}>Submit departure tickets</Button>
+
+            <h1>Return flight seat Picker </h1>
+            <div className='seatPicker'>
+              <SeatPicker key={this.state.retRows}
+                addSeatCallback={this.addSeatCallbackContinousCaseRet}
+                removeSeatCallback={this.removeSeatCallbackRet}
+                rows={retRows}
+                maxReservableSeats={this.state.MaxSeats}
+                alpha
+                visible
+                selectedByDefault={false}
+                loading={loading}
+                tooltipProps={{ multiline: true }}
+                continuous
+              />
+            </div>
+
+
+
+            <Button variant="contained" onClick={this.returnSeatsClick}>Submit return tickets</Button>
           </div>
         )
       }

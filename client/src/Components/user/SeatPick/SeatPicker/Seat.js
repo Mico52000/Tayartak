@@ -18,15 +18,33 @@ export default class Seat extends Component {
       isEnabled,
       isReserved,
       orientation,
+      Cabin,
+      isWrongCabin,
     } = this.props;
+    var CabinClass=""
+    if(Cabin.localeCompare("BusinessClass")==0){
+      CabinClass = "seat--business"
+    }
+    else if(Cabin.localeCompare("FirstClass")==0){
+      CabinClass = "seat--firstclass"
+    }
+    else{
+      CabinClass = "seat--economy"
+    }
+   
     const className =
-      "seat" +
+      "seat " + 
+      (isWrongCabin? "seat--notYourCabin " : "") +
+      CabinClass + 
       (isSelected ? " seat--selected" : "") +
       (!isSelected && isEnabled && !isReserved ? " seat--enabled" : "") +
       (isReserved ? " seat--reserved" : "") +
+      
       ` seat--${!orientation ? "north" : orientation}`;
+      console.log(className);
+      var onclick = (isWrongCabin)? null : this.handleClick;
     return (
-      <div data-tip={tooltip} className={className} onClick={this.handleClick}>
+      <div data-tip={tooltip} className={className} onClick={onclick}>
         {tooltip ? <ReactTooltip {...this.props.tooltipProps} /> : null}
         <span className="seat__number">{this.props.seatNumber}</span>
       </div>

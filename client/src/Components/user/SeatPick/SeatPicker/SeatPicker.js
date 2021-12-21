@@ -254,6 +254,8 @@ export class SeatPicker extends Component {
         selectSeat: this.selectSeat.bind(this, rowNumber, seat.number, seat.id),
         seatNumber: seat.number,
         tooltipProps: this.props.tooltipProps,
+        Cabin : seat.Cabin,
+        isWrongCabin : seat.isWrongCabin
       };
       return <Seat key={index} {...props} />;
     });

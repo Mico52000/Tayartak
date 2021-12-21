@@ -10,6 +10,7 @@
   &__number{
     font-size: 10px
   }
+ 
 
   &--north{
     border-top-left-radius: 8px;
@@ -33,16 +34,36 @@
 
   &--enabled {
     cursor: pointer;
-    &:hover { background-color: $color-secondary; }
+    // &:hover { background-color: $color-secondary; }
   }
-
+  
+  &--notYourCabin {
+    cursor: not-allowed;
+  }
+ 
+  &--firstclass {
+    background-color: $color-firstclass;
+    margin-top: 4px;
+    margin-bottom: 4px;
+   
+  }
+  &--business {
+    background-color: $color-business;
+    margin-top: 4px;
+    margin-bottom : 8px;
+    
+  }
+  
+ 
   &--selected {
     cursor: pointer;
     background-color: $color-tertiary;
   }
-
+ 
   &--reserved {
     cursor: not-allowed;
     background-color: $color-seat-reserved;
   }
+ 
+ 
 }

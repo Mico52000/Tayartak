@@ -7,6 +7,7 @@ const Seat = new mongoose.Schema({
     number: Number,
     isReserved: { type: Boolean, default: false },
     Cost : Number,
+    Cabin:String
 
     
 });
