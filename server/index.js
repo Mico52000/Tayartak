@@ -3,15 +3,15 @@ const express = require('express');
 const App = express();
 const mongoose = require('mongoose');
 const Flightmodel = require('./models/Flights');
+const ReservationsModel = require('./models/Reservations');
+
 const cors = require('cors');
 App.use(express.json());
 App.use(cors());
 const port = process.env.PORT || 8000;
 
 
-
-mongoose.connect(process.env.MONGO_LINK, { useNewUrlParser: true }).then(result =>console.log("MongoDB is now connected") )
-.catch(err => console.log(err));
+mongoose.connect(process.env.MONGO_LINK, { useNewUrlParser: true });
 
 App.listen(port, () => {
   console.log("You are connected!")
@@ -34,18 +34,10 @@ App.post('/addflight', async (req, res) => {
     DepartureTime: reqbody.DepartureTime
   });
 
-  try{
-    await flight.save();
-    res.send("Inserted!");
-  }catch(err){
-    console.log(err);
-}
-  
-
-
+  await flight.save();
 });
 App.put('/update',async(req,res)=>{
-  
+  console.log("linah");
   const flight=req.body;
   console.log(flight);
           Object.keys(flight).forEach(key => {
@@ -68,8 +60,6 @@ App.put('/update',async(req,res)=>{
   }
  
 });
-
-
 App.delete("/delete/:id",async (req,res) =>{
   console.log(req.params.id);
   var id =req.params.id;
@@ -120,6 +110,102 @@ App.get('/search', async (req, res) => {
       res.send(result);
     }
   })
+});
+
+App.get('/Summary/:departureId/:returnId/:num/:Cabin', async (req,res) =>{
+  console.log("here");
+  //var departureId = req.params.departureId;
+ // console.log(departureId);
+  //var returnId = req.params.returnId;
+  //console.log(returnId);
+  const departureId = mongoose.Types.ObjectId(req.params.departureId);
+  const  returnId =mongoose.Types.ObjectId(req.params.returnId);
+  const Query = { _id:{$in: [departureId,returnId]}};
+  //console.log(Query);
+ 
+ 
+     Flightmodel.find(Query,(err,docs) =>{
+       // if(err) throw err;
+        if(docs){
+          console.log(docs);
+            res.send(docs);
+        }
+    })
+    
+  
+
+});
+
+App.get('/Itinerary/:userId/:departureId/:returnId/:num/:Cabin', (req,res) =>{
+  console.log("here");
+  const  userId = req.params.userId;
+  const  departureId = req.params.departureId;
+  const  returnId = req.params.returnId;
+  const Query = { UserId : userId , DepFlight  : departureId ,RetFlight : returnId}
+  const Obj = {             
+    arrayOne: [],
+    arrayTwo: []
+};
+  
+     ReservationsModel.findOne(Query,(err,docs) =>{
+       // if(err) throw err;
+        if(docs){
+          console.log(docs);
+          Obj.arrayOne.push(docs);
+          console.log("1");
+         console.log(Obj.arrayOne);
+            
+        }
+    })
+    
+  Flightmodel.findById(departureId,(err,docs) =>{
+    Obj.arrayOne.push(docs);
+    console.log(Obj.arrayOne);
+            
+    // a.push(docs);
+    // console.log("2");
+    // console.log(a);
+  })
+  Flightmodel.findById(returnId,(err,docs) =>{
+    Obj.arrayOne.push(docs);
+    console.log(Obj.arrayOne);
+
+    // a.push(docs);
+    // console.log("3");
+    // console.log(a);
+  })
+  console.log(Obj.arrayOne);
+  res.send(JSON.stringify(Obj.arrayOne));
+
+});
+
+App.post('/reserve/:userId/:departureId/:returnId/:num/:Cabin',async(req,res) =>{
+
+  const  userId = req.params.userId;
+  const  departureId = req.params.departureId;
+  const  returnId = req.params.returnId;
+   console.log("reserve");
+   const Query = { UserId : userId , DepFlight  : departureId ,RetFlight : returnId}
+   console.log(Query);
+   ReservationsModel.findOne(Query,(err,docs) =>{
+     
+     
+      if(docs){
+        const reservation = new ReservationsModel({
+          UserId : req.params.userId,
+      DepFlight : req.params.departureId,
+      RetFlight : req.params.returnId,
+      NumSeats : req.params.num,
+      Seats : "A1-A2",
+      Cabin : req.params.Cabin
+      
+        });
+      
+        reservation.save();
+         
+      }
+  })
+ 
 });
 
 const flightaya = new Flightmodel({
