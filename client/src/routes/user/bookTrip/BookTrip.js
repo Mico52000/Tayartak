@@ -117,6 +117,7 @@ export default class BookTrip extends React.Component {
 
   }
 
+
   confirmReservation(){
     Axios.post("http://localhost:8000/confirmReservation",{
       
@@ -125,6 +126,11 @@ export default class BookTrip extends React.Component {
         selectedFlightIDRet: this.state.SelectedFlightRet._id,
         numberOfPassengers: this.state.numberOfPassengers,
         cabin: this.state.cabin,
+        totalPrice:this.state.numberOfPassengers*(this.state.cabin=== "economy"? this.state.SelectedFlightDep.PriceEconomy +
+        this.state.SelectedFlightRet.PriceEconomy: this.state.cabin==="business"? this.state.SelectedFlightDep.PriceBusiness +
+        this.state.SelectedFlightRet.PriceBusiness: this.state.SelectedFlightDep.PriceFirst +
+        this.state.SelectedFlightRet.PriceFirst
+        ) ,
       
     }).then((resp)=>{console.log(resp.data)});
     
@@ -232,6 +238,7 @@ export default class BookTrip extends React.Component {
                     Your trip has been booked.
                     Click here to choose your seats:
                   </Typography>
+                  <a class="link dim white dib mr3" href="/user/reservations" title="reservations">My Reservations</a>
                 </React.Fragment>
               ) : (
                 <React.Fragment>

@@ -389,6 +389,7 @@ App.post('/confirmReservation', async (req, res) =>{
     Cabin: reservationData.Cabin,
     SeatsDep: [],
     SeatsRet:[],
+    TotalPrice : reservationData.totalPrice,
   });
   await reservation.save();
 
