@@ -27,8 +27,8 @@ export default class AddFlight extends Component {
     
         e.preventDefault();
 
-        Axios.post("http://localhost:8000/addflight",this.state).then(()=>{
-            alert("Flight Added");
+        Axios.post("http://localhost:8000/addflight",this.state).then((resp)=>{
+            alert(resp.data);
             window.location.reload(false);
         }).catch((err) => alert(err));
       }

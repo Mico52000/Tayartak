@@ -3,12 +3,7 @@ const express = require('express');
 const App = express();
 const mongoose = require('mongoose');
 const Flightmodel = require('./models/Flights');
-<<<<<<< HEAD
 const Reservationmodel = require('./models/Reservations')
-=======
-const ReservationsModel = require('./models/Reservations');
-
->>>>>>> ed888a79f952fbf4bd661c6df6ecb13011bb7c5c
 const cors = require('cors');
 App.use(express.json());
 App.use(cors());
@@ -23,7 +18,7 @@ App.listen(port, () => {
 
 
 App.post('/addflight', async (req, res) => {
-
+  
 
   const reqbody = req.body;
   const flight = new Flightmodel({
@@ -38,7 +33,52 @@ App.post('/addflight', async (req, res) => {
     DepartureTime: reqbody.DepartureTime
   });
 
-  await flight.save();
+
+  var totalseats = flight.NumberOfBusinessSeats+flight.NumberOfFirstSeats+flight.NumberOfEconomySeats;
+  if(totalseats%6 !=0){
+    res.send("The total number of seats must be a multiple of 6");
+  }
+  else{
+  var BusinessSeatsRemaining = flight.NumberOfBusinessSeats;
+  var FirstSeatsRemaining = flight.NumberOfFirstSeats;
+  var EconomySeatsRemaining = flight.NumberOfEconomySeats;
+  var seats =[];
+  for(let i=0;i<Math.ceil(totalseats/6.0);i++){
+    var row =[];
+    for(let  j=1;j<=6;j++){
+      var seat = {
+        id:i*6 +j,
+        number:j,
+        isReserved:false,
+        Cabin:'',
+      }
+      if(BusinessSeatsRemaining>0){
+        seat.Cabin = 'BusinessClass'
+        BusinessSeatsRemaining--;
+      }
+      else if(FirstSeatsRemaining>0){
+        seat.Cabin = 'FirstClass';
+        FirstSeatsRemaining--;
+
+      }
+      else{
+        seat.Cabin = 'Economy';
+        EconomySeatsRemaining--;
+      }
+      if(j== 3 || j== 5){
+        row.push(null);
+        
+      }
+        row.push(seat);
+    }
+    seats.push(row);
+  }
+  
+
+
+   await flight.save();
+   res.send("Flight Added!");
+}
 });
 App.get('/searchReservation', async (req, res) => {
   console.log(req.query.resid);
@@ -96,7 +136,6 @@ App.put('/update',async(req,res)=>{
   }
  
 });
-<<<<<<< HEAD
 
 
 App.put('/updateResDep',async(req,res)=>{
@@ -158,8 +197,6 @@ App.put('/updateseats',async(req,res)=>{
  
 });
 
-=======
->>>>>>> ed888a79f952fbf4bd661c6df6ecb13011bb7c5c
 App.delete("/delete/:id",async (req,res) =>{
   console.log(req.params.id);
   var id =req.params.id;
@@ -212,7 +249,6 @@ App.get('/search', async (req, res) => {
   })
 });
 
-<<<<<<< HEAD
 // const flightaya = new Flightmodel({
 //   From: "hopa",
 //   To: "opa",
@@ -247,7 +283,6 @@ App.get('/search', async (req, res) => {
 
 // });
 // reservationaya.save();
-=======
 App.get('/Summary/:departureId/:returnId/:num/:Cabin', async (req,res) =>{
   console.log("here");
   //var departureId = req.params.departureId;
@@ -375,4 +410,3 @@ const flightaya = new Flightmodel({
  
 });
 flightaya.save();
->>>>>>> ed888a79f952fbf4bd661c6df6ecb13011bb7c5c
