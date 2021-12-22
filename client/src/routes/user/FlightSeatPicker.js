@@ -65,7 +65,7 @@ export default class FlightSeatPicker extends Component {
               number: element.number,
               isReserved: element.isReserved,
               isWrongCabin:(element.Cabin.localeCompare(this.state.ReservationCabin)==0)? false : true,
-              tooltip: (element.Cabin.localeCompare(this.state.ReservationCabin)==0 || (element.isReserved ==true))? "": "You did not reserve this Cabin class",
+              tooltip: (element.Cabin.localeCompare(this.state.ReservationCabin)==0 || (element.isReserved ==true))? "": `You did not reserve the Cabin  : ${element.Cabin}, you can only pick ${this.state.ReservationCabin} seats `,
               Cabin:element.Cabin,
 
 
@@ -101,7 +101,7 @@ export default class FlightSeatPicker extends Component {
               number: element.number,
               isReserved: element.isReserved,
               isWrongCabin:(element.Cabin.localeCompare(this.state.ReservationCabin)==0)? false : true,
-              tooltip: (element.Cabin.localeCompare(this.state.ReservationCabin)==0 || (element.isReserved ==true))  ? "": "You did not reserve this Cabin class",
+              tooltip: (element.Cabin.localeCompare(this.state.ReservationCabin)==0 || (element.isReserved ==true))  ? "": `You did not reserve the Cabin  : ${element.Cabin}, you can only pick ${this.state.ReservationCabin} seats `,
               Cabin:element.Cabin,
 
 
@@ -309,7 +309,7 @@ export default class FlightSeatPicker extends Component {
               />
             </div>
 
-
+            <p>*If the button is greyed out then this reservation has already booked seats</p>
             <Button disabled={this.state.DisablebuttonA} variant="contained" onClick={this.departureSeatsClick}>Submit departure tickets</Button>
 
             <h1>Return flight seat Picker </h1>
@@ -329,7 +329,7 @@ export default class FlightSeatPicker extends Component {
             </div>
 
 
-
+            <p>*If the button is greyed out then this reservation has already booked seats</p>
             <Button disabled={this.state.DisablebuttonB} variant="contained" onClick={this.returnSeatsClick}>Submit return tickets</Button>
           </div>
         )

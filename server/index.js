@@ -151,7 +151,7 @@ App.get('/searchflightbyId', async (req, res) => {
         res.send(seatobj);
       }
       catch (err) {
-        alert(err);
+        res.send("oops and error occured")
       }
 
     }
@@ -478,7 +478,7 @@ App.post('/reserve/:userId/:departureId/:returnId/:num/:Cabin', async (req, res)
   console.log("reserve");
   const Query = { UserId: userId, DepFlight: departureId, RetFlight: returnId }
   console.log(Query);
-  ReservationsModel.findOne(Query, (err, docs) => {
+  Reservationsmodel.findOne(Query, (err, docs) => {
 
 
     if (!docs) {
@@ -495,7 +495,10 @@ App.post('/reserve/:userId/:departureId/:returnId/:num/:Cabin', async (req, res)
   })
 });
 
-// const flightaya = new Flightmodel({
+// App.post('/removeSeats')
+
+
+//const flightaya = new Flightmodel({
 //   From: "hopa",
 //   To: "opa",
 //   FlightDate: "aywa",
