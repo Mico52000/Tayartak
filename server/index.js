@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const Flightmodel = require('./models/Flights');
 const Reservationmodel = require('./models/Reservations');
 const UsersModel = require('./models/Users');
-const nodemailer=require('nodemailer');
+const nodemailer = require('nodemailer');
 const cors = require('cors');
 App.use(express.json());
 App.use(cors());
@@ -18,11 +18,11 @@ App.listen(port, () => {
   console.log("You are connected!")
 });
 
-var transporter =nodemailer.createTransport({
-  service:'gmail',
-  auth:{
-    user:'projectaclsp2@gmail.com',
-    pass:'22122021'
+var transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'projectaclsp2@gmail.com',
+    pass: '22122021'
   }
 });
 App.post('/addflight', async (req, res) => {
@@ -42,7 +42,7 @@ App.post('/addflight', async (req, res) => {
     Seats: []
   });
 
- 
+
   var totalseats = flight.NumberOfBusinessSeats + flight.NumberOfFirstSeats + flight.NumberOfEconomySeats;
   if (totalseats % 6 != 0) {
     res.send("The total number of seats must be a multiple of 6");
@@ -89,46 +89,46 @@ App.post('/addflight', async (req, res) => {
     res.send("Flight Added!");
   }
 });
-App.get('/edit',async (req, res) =>{
-  let user=mongoose.Types.ObjectId("61bff21874e339983be37a00");
-    UsersModel.findById(user, function (err, docs) {
-      if (err){
-          console.log(err);
-      }
-      else{
-        console.log(docs);
-        res.send(docs);
-      }
-    });
-});
-App.put('/updateuser',async(req,res)=>{
-  
-  const user=req.body;
-  console.log(user);
-  var x=0;
-          Object.keys(user).forEach(key => {
-              if (user[key] == null || user[key]==""||user[key]==0) {
-                delete user[key];
-                x++;
-              }
-            });
-            console.log(x);
-            console.log(x==6);
-           
- var num =mongoose.Types.ObjectId("61bff21874e339983be37a00");
-  //console.log(num);
-  const nid= {_id:num};
-  try{
-      
-        await UsersModel.updateOne(nid,user);
-          if(x!=6){
-         res.send("Updated!");
-          }
-          
-    }catch(err){
+App.get('/edit', async (req, res) => {
+  let user = mongoose.Types.ObjectId("61bff21874e339983be37a00");
+  UsersModel.findById(user, function (err, docs) {
+    if (err) {
       console.log(err);
+    }
+    else {
+      console.log(docs);
+      res.send(docs);
+    }
+  });
+});
+App.put('/updateuser', async (req, res) => {
+
+  const user = req.body;
+  console.log(user);
+  var x = 0;
+  Object.keys(user).forEach(key => {
+    if (user[key] == null || user[key] == "" || user[key] == 0) {
+      delete user[key];
+      x++;
+    }
+  });
+  console.log(x);
+  console.log(x == 6);
+
+  var num = mongoose.Types.ObjectId("61bff21874e339983be37a00");
+  //console.log(num);
+  const nid = { _id: num };
+  try {
+
+    await UsersModel.updateOne(nid, user);
+    if (x != 6) {
+      res.send("Updated!");
+    }
+
+  } catch (err) {
+    console.log(err);
   }
- 
+
 });
 App.get('/searchReservation', async (req, res) => {
   console.log(req.query.resid);
@@ -188,62 +188,62 @@ App.put('/update', async (req, res) => {
 
 });
 
-App.delete("/deleteres/:id",async (req,res) =>{
+App.delete("/deleteres/:id", async (req, res) => {
   // console.log(req.params.id);
-  let user="";
-   id =mongoose.Types.ObjectId(req.params.id);
-   var myquery = { _id: id };
-   Reservationmodel.findById(id, function (err, docs) {
-     console.log(docs);
-     if (err){
-         console.log(err);
-     }
-     else{
-        user=mongoose.Types.ObjectId(docs.UserId);
-        //mongoose.Types.ObjectId(docs.UserId);
-         console.log("Result : ", user);
-         UsersModel.findById(user, function (err, docs) {
-           if (err){
-               console.log(err);
-           }
-           else{
-              
-               console.log(docs);
-               var mailOptions={
-                 from:'projectaclsp2@gmail.com',
-                 to:docs.Email,
-                 subject:'Canceled Reservation',
-                 text:'This mail is to Inform you that you reservation with number :'+id+' has been cancelled'+'  TotalPrice is '+ docs.TotalPrice
-               };
-               transporter.sendMail(mailOptions,function(err,info){
-                 if(err){
-                   console.log(err);
-                 }else{
-                   console.log('Email')
-                }
-               }
-                );
-           }
-         });
-     }
- });
- 
-  
-    try{
-  
-     await Reservationmodel.deleteOne(myquery),function(err,docs){
-         if(err) throw err;
-         if(docs){
-             console.log("true");
-         }
-     };
-     //res.send("item deleted");
+  let user = "";
+  id = mongoose.Types.ObjectId(req.params.id);
+  var myquery = { _id: id };
+  Reservationmodel.findById(id, function (err, docs) {
+    console.log(docs);
+    if (err) {
+      console.log(err);
     }
-    catch(error){
-     console.log(error);
+    else {
+      user = mongoose.Types.ObjectId(docs.UserId);
+      //mongoose.Types.ObjectId(docs.UserId);
+      console.log("Result : ", user);
+      UsersModel.findById(user, function (err, docs) {
+        if (err) {
+          console.log(err);
+        }
+        else {
+
+          console.log(docs);
+          var mailOptions = {
+            from: 'projectaclsp2@gmail.com',
+            to: docs.Email,
+            subject: 'Canceled Reservation',
+            text: 'This mail is to Inform you that you reservation with number :' + id + ' has been cancelled' + '  TotalPrice is ' + docs.TotalPrice
+          };
+          transporter.sendMail(mailOptions, function (err, info) {
+            if (err) {
+              console.log(err);
+            } else {
+              console.log('Email')
+            }
+          }
+          );
+        }
+      });
     }
-    
-    } );
+  });
+
+
+  try {
+
+    await Reservationmodel.deleteOne(myquery), function (err, docs) {
+      if (err) throw err;
+      if (docs) {
+        console.log("true");
+      }
+    };
+    //res.send("item deleted");
+  }
+  catch (error) {
+    console.log(error);
+  }
+
+});
 App.put('/updateResDep', async (req, res) => {
 
   const reservation = req.body;
@@ -263,25 +263,26 @@ App.put('/updateResDep', async (req, res) => {
   }
 
 });
-App.get('/reservationsgetBooking',async (req,resp)=>{
+App.get('/reservationsgetBooking', async (req, resp) => {
   const userId = '61bff21874e339983be37a00';
-   // console.log("dakhal");
-  const Query ={UserId : userId};
-    Reservationmodel.find(Query,  (err,docs) =>{
-  
-      resp.send(docs);
-        
-      })});  
+  // console.log("dakhal");
+  const Query = { UserId: userId };
+  Reservationmodel.find(Query, (err, docs) => {
 
-App.get('/reservationsgetFlights',async (req,resp)=>{
-   const id = req.query.flightId;
+    resp.send(docs);
+
+  })
+});
+
+App.get('/reservationsgetFlights', async (req, resp) => {
+  const id = req.query.flightId;
   // console.log(id);
-  Flightmodel.findById(id,(err,doc) =>{
-    
-    
-    
-       resp.send(doc) ;
-    }
+  Flightmodel.findById(id, (err, doc) => {
+
+
+
+    resp.send(doc);
+  }
   );
 }
 );
@@ -458,7 +459,7 @@ App.get('/searchTrip', async (req, res) => {
 });
 
 
-App.post('/confirmReservation', async (req, res) =>{
+App.post('/confirmReservation', async (req, res) => {
 
   const reservationData = req.body;
   const reservation = new Reservationmodel({
@@ -466,10 +467,49 @@ App.post('/confirmReservation', async (req, res) =>{
     DepFlight: reservationData.selectedFlightIDDep,
     RetFlight: reservationData.selectedFlightIDRet,
     NumSeats: reservationData.numberOfPassengers,
-    Seats: "A1-A2",
-    Cabin: reservationData.Cabin
+    Cabin: reservationData.cabin,
+    SeatsDep: [],
+    SeatsRet:[],
+    TotalPrice : reservationData.totalPrice,
   });
   await reservation.save();
+
+
+  //now its time to decrement available seats in table flights
+  await Flightmodel.findById(reservationData.selectedFlightIDDep, async (err, depFlight) => {
+    if (!err) {
+
+      if (reservationData.cabin == "economy") {
+        depFlight.NumberOfEconomySeats = depFlight.NumberOfEconomySeats - reservationData.numberOfPassengers;
+      }
+      else if (reservationData.cabin == "business") {
+        depFlight.NumberOfBusinessSeats = depFlight.NumberOfBusinessSeats - reservationData.numberOfPassengers;
+      } else {
+        depFlight.NumberOfFirstSeats = depFlight.NumberOfFirstSeats - reservationData.numberOfPassengers;
+      }
+
+      await Flightmodel.updateOne({ _id: reservationData.selectedFlightIDDep }, depFlight);
+
+    }
+  }).clone();
+
+  await Flightmodel.findById(reservationData.selectedFlightIDRet, async (err, retFlight) => {
+    if (!err) {
+
+      if (reservationData.cabin == "economy") {
+        retFlight.NumberOfEconomySeats = retFlight.NumberOfEconomySeats - reservationData.numberOfPassengers;
+      }
+      else if (reservationData.cabin == "business") {
+        retFlight.NumberOfBusinessSeats = retFlight.NumberOfBusinessSeats - reservationData.numberOfPassengers;
+      } else {
+        retFlight.NumberOfFirstSeats = retFlight.NumberOfFirstSeats - reservationData.numberOfPassengers;
+      }
+
+      await Flightmodel.updateOne({ _id: reservationData.selectedFlightIDRet }, retFlight);
+
+    }
+  }).clone();
+
   console.log("reservation added!");
   res.send("reservation Added!");
 
@@ -548,7 +588,7 @@ App.get('/Itinerary/:userId/:departureId/:returnId/:num/:Cabin', (req, res) => {
 
 App.post('/reserve/:userId/:departureId/:returnId/:num/:Cabin', async (req, res) => {
 
-  
+
   const userId = req.params.userId;
   const departureId = req.params.departureId;
   const returnId = req.params.returnId;

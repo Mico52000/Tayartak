@@ -22,7 +22,7 @@ UserId :{
   Cabin : {
       type: String
   },
-  Price : {
+  TotalPrice : {
       type : Number
   },
   SeatsDep : [],

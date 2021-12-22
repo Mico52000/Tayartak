@@ -125,6 +125,10 @@ export default class BookTrip extends React.Component {
         selectedFlightIDRet: this.state.SelectedFlightRet._id,
         numberOfPassengers: this.state.numberOfPassengers,
         cabin: this.state.cabin,
+        totalPrice:this.state.numberOfPassengers*(this.state.cabin=== "economy"? this.state.SelectedFlightDep.PriceEconomy +
+        this.state.SelectedFlightRet.PriceEconomy: this.state.cabin==="business"? this.state.SelectedFlightDep.PriceBusiness +
+        this.state.SelectedFlightRet.PriceBusiness: this.state.SelectedFlightDep.PriceFirst +
+        this.state.SelectedFlightRet.PriceFirst)
       
     }).then((resp)=>{console.log(resp.data)});
     
@@ -230,8 +234,9 @@ export default class BookTrip extends React.Component {
                   </Typography>
                   <Typography variant="subtitle1">
                     Your trip has been booked.
-                    Click here to choose your seats:
                   </Typography>
+                  <a href="/user/reservations" title="reservations">Click here to view 
+                    your reservations and pick your seats</a>
                 </React.Fragment>
               ) : (
                 <React.Fragment>
