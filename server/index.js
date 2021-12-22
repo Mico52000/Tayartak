@@ -10,7 +10,9 @@ App.use(cors());
 const port = process.env.PORT || 8000;
 
 
-mongoose.connect(process.env.MONGO_LINK, { useNewUrlParser: true });
+mongoose.connect(process.env.MONGO_LINK, { useNewUrlParser: true }).then(result => console.log("MongoDB is now connected"))
+  .catch(err => console.log(err));
+
 
 App.listen(port, () => {
   console.log("You are connected!")
@@ -18,7 +20,7 @@ App.listen(port, () => {
 
 
 App.post('/addflight', async (req, res) => {
-  
+
 
   const reqbody = req.body;
   const flight = new Flightmodel({
@@ -31,195 +33,196 @@ App.post('/addflight', async (req, res) => {
     NumberOfFirstSeats: reqbody.NumberOfFirstSeats,
     ArrivalTime: reqbody.ArrivalTime,
     DepartureTime: reqbody.DepartureTime,
-    Seats:[]
+    Seats: []
   });
 
 
-  var totalseats = flight.NumberOfBusinessSeats+flight.NumberOfFirstSeats+flight.NumberOfEconomySeats;
-  if(totalseats%6 !=0){
+  var totalseats = flight.NumberOfBusinessSeats + flight.NumberOfFirstSeats + flight.NumberOfEconomySeats;
+  if (totalseats % 6 != 0) {
     res.send("The total number of seats must be a multiple of 6");
   }
-  else{
-  var BusinessSeatsRemaining = flight.NumberOfBusinessSeats;
-  var FirstSeatsRemaining = flight.NumberOfFirstSeats;
-  var EconomySeatsRemaining = flight.NumberOfEconomySeats;
-  var seats =[];
-  for(let i=0;i<Math.ceil(totalseats/6.0);i++){
-    var row =[];
-    for(let  j=1;j<=6;j++){
-      var seat = {
-        id:i*6 +j,
-        number:j,
-        isReserved:false,
-        Cabin:'',
-      }
-      if(BusinessSeatsRemaining>0){
-        seat.Cabin = 'BusinessClass'
-        BusinessSeatsRemaining--;
-      }
-      else if(FirstSeatsRemaining>0){
-        seat.Cabin = 'FirstClass';
-        FirstSeatsRemaining--;
+  else {
+    var BusinessSeatsRemaining = flight.NumberOfBusinessSeats;
+    var FirstSeatsRemaining = flight.NumberOfFirstSeats;
+    var EconomySeatsRemaining = flight.NumberOfEconomySeats;
+    var seats = [];
+    for (let i = 0; i < Math.ceil(totalseats / 6.0); i++) {
+      var row = [];
+      for (let j = 1; j <= 6; j++) {
+        var seat = {
+          id: i * 6 + j,
+          number: j,
+          isReserved: false,
+          Cabin: '',
+        }
+        if (BusinessSeatsRemaining > 0) {
+          seat.Cabin = 'BusinessClass'
+          BusinessSeatsRemaining--;
+        }
+        else if (FirstSeatsRemaining > 0) {
+          seat.Cabin = 'FirstClass';
+          FirstSeatsRemaining--;
 
-      }
-      else{
-        seat.Cabin = 'Economy';
-        EconomySeatsRemaining--;
-      }
-      if(j== 3 || j== 5){
-        row.push(null);
-        
-      }
+        }
+        else {
+          seat.Cabin = 'Economy';
+          EconomySeatsRemaining--;
+        }
+        if (j == 3 || j == 5) {
+          row.push(null);
+
+        }
         row.push(seat);
+      }
+      seats.push(row);
     }
-    seats.push(row);
-  }
-  
 
-  flight.Seats=seats;
-   await flight.save();
-   res.send("Flight Added!");
-}
+
+    flight.Seats = seats;
+    await flight.save();
+    res.send("Flight Added!");
+  }
 });
 App.get('/searchReservation', async (req, res) => {
   console.log(req.query.resid);
 
-  Reservationmodel.findById(req.query.resid,function (err, result) {
+  Reservationmodel.findById(req.query.resid, function (err, result) {
     if (err) {
       alert(err);
     }
-    else{
+    else {
       console.log(result);
       res.send(result);
     }
-  })});
- 
-  App.get('/searchflightbyId', async (req, res) => {
-  
-    Flightmodel.findById(req.query.flightid,function (err, result) {
-      if (err) {
+  })
+});
+
+App.get('/searchflightbyId', async (req, res) => {
+
+  Flightmodel.findById(req.query.flightid, function (err, result) {
+    if (err) {
+      alert(err);
+    }
+    else {
+      try {
+        var seatobj = { seats: result.Seats };
+        res.send(seatobj);
+      }
+      catch (err) {
         alert(err);
       }
-      else{
-        try{
-          var seatobj = {seats:result.Seats};
-          res.send(seatobj);
-        }
-        catch(err){
-          alert(err);
-        }
-       
-      }
-    });
+
+    }
+  });
 
 });
-App.put('/update',async(req,res)=>{
+App.put('/update', async (req, res) => {
   console.log("linah");
-  const flight=req.body;
+  const flight = req.body;
   console.log(flight);
-          Object.keys(flight).forEach(key => {
-              if (flight[key] == null || flight[key]==""||flight[key]==0) {
-                delete flight[key];
-              }
-            });
- var num =mongoose.Types.ObjectId(flight._id);
+  Object.keys(flight).forEach(key => {
+    if (flight[key] == null || flight[key] == "" || flight[key] == 0) {
+      delete flight[key];
+    }
+  });
+  var num = mongoose.Types.ObjectId(flight._id);
   //console.log(num);
-  const nid= {_id:num};
-  try{
-      
-        await Flightmodel.updateOne(nid,flight);
-          
-         res.send("Updated!");
-        
-          
-    }catch(err){
-      console.log(err);
+  const nid = { _id: num };
+  try {
+
+    await Flightmodel.updateOne(nid, flight);
+
+    res.send("Updated!");
+
+
+  } catch (err) {
+    console.log(err);
   }
- 
+
 });
 
 
-App.put('/updateResDep',async(req,res)=>{
-  
-  const reservation=req.body;
- 
-  var num =mongoose.Types.ObjectId(reservation._id);
+App.put('/updateResDep', async (req, res) => {
+
+  const reservation = req.body;
+
+  var num = mongoose.Types.ObjectId(reservation._id);
   delete reservation._id;
-  const nid= {_id:num};
-  try{
-      
-        await Reservationmodel.updateOne(nid,reservation);
-          
-         res.send("Updated!");
-        
-          
-    }catch(err){
-      console.log(err);
+  const nid = { _id: num };
+  try {
+
+    await Reservationmodel.updateOne(nid, reservation);
+
+    res.send("Updated!");
+
+
+  } catch (err) {
+    console.log(err);
   }
- 
+
 });
 
-App.put('/updateResRet',async(req,res)=>{
-  
-  const reservation=req.body;
- 
-  var num =mongoose.Types.ObjectId(reservation._id);
+App.put('/updateResRet', async (req, res) => {
+
+  const reservation = req.body;
+
+  var num = mongoose.Types.ObjectId(reservation._id);
   delete reservation._id;
-  const nid= {_id:num};
-  try{
-      
-        await Reservationmodel.updateOne(nid,reservation);
-          
-         res.send("Updated!");
-        
-          
-    }catch(err){
-      console.log(err);
+  const nid = { _id: num };
+  try {
+
+    await Reservationmodel.updateOne(nid, reservation);
+
+    res.send("Updated!");
+
+
+  } catch (err) {
+    console.log(err);
   }
- 
+
 });
 
-App.put('/updateseats',async(req,res)=>{
-  
-  const flight=req.body;
- 
-  var num =mongoose.Types.ObjectId(flight._id);
+App.put('/updateseats', async (req, res) => {
+
+  const flight = req.body;
+
+  var num = mongoose.Types.ObjectId(flight._id);
   delete flight._id;
-  const nid= {_id:num};
+  const nid = { _id: num };
   console.log(flight);
-  try{
-      
-        await Flightmodel.updateOne(nid,flight );
-        
-          
-    }catch(err){
-      console.log(err);
+  try {
+
+    await Flightmodel.updateOne(nid, flight);
+
+
+  } catch (err) {
+    console.log(err);
   }
- 
+
 });
 
-App.delete("/delete/:id",async (req,res) =>{
+App.delete("/delete/:id", async (req, res) => {
   console.log(req.params.id);
-  var id =req.params.id;
-  id =mongoose.Types.ObjectId(id);
+  var id = req.params.id;
+  id = mongoose.Types.ObjectId(id);
   var myquery = { _id: id };
- 
-try{
- 
- await Flightmodel.deleteOne(myquery),function(err,docs){
-     if(err) throw err;
-     if(docs){
-         console.log("true");
-     }
- };
- res.send("item deleted");
-}
-catch(error){
- console.log(error);
-}
 
- 
-} );
+  try {
+
+    await Flightmodel.deleteOne(myquery), function (err, docs) {
+      if (err) throw err;
+      if (docs) {
+        console.log("true");
+      }
+    };
+    res.send("item deleted");
+  }
+  catch (error) {
+    console.log(error);
+  }
+
+
+});
 
 App.get('/search', async (req, res) => {
   // const flight = {
@@ -266,9 +269,9 @@ App.get('/search', async (req, res) => {
 //     [{id: 13, number: 1,Cabin:"Economy"}, {id: 14, number: 2,Cabin:"Economy"}, null, {id: 15, number: 3, isReserved: true, orientation: 'east',Cabin:"Economy"}, {id: 16, number: '4', orientation: 'west',Cabin:"Economy"}, null, {id: 17, number: 5,Cabin:"Economy"}, {id: 18, number: 6,Cabin:"Economy"}],
 //     [{id: 19, number: 1, Cabin:"FirstClass"}, {id: 20, number: 2,Cabin:"BusinessClass"}, null, {id: 21, number: 3, Cabin:"Economy"}, {id: 22, number: '4',Cabin:"Economy"}, null, {id: 23, number: 5,Cabin:"Economy"}, {id: 24, number: 6,Cabin:"Economy"}],
 //     [{id: 25, number: 1, isReserved: true,Cabin:"Economy"}, {id: 26, number: 2, Cabin:"Economy"}, null, {id: 27, number: '3', isReserved: true,Cabin:"Economy"}, {id: 28, number: '4', Cabin:"Economy"}, null,{id: 29, number: 5, Cabin:"Economy"}, {id: 30, number: 6, isReserved: true,Cabin:"Economy"}],
-    
+
 //   ]
- 
+
 // });
 // flightaya.save();
 
@@ -284,61 +287,126 @@ App.get('/search', async (req, res) => {
 
 // });
 // reservationaya.save();
-App.get('/Summary/:departureId/:returnId/:num/:Cabin', async (req,res) =>{
-  console.log("here");
-  //var departureId = req.params.departureId;
- // console.log(departureId);
-  //var returnId = req.params.returnId;
-  //console.log(returnId);
-  const departureId = mongoose.Types.ObjectId(req.params.departureId);
-  const  returnId =mongoose.Types.ObjectId(req.params.returnId);
-  const Query = { _id:{$in: [departureId,returnId]}};
-  //console.log(Query);
- 
- 
-     Flightmodel.find(Query,(err,docs) =>{
-       // if(err) throw err;
-        if(docs){
-          console.log(docs);
-            res.send(docs);
-        }
-    })
-    
-  
+
+
+App.get('/searchTrip', async (req, res) => {
+
+  const searchCriteria = req.query;
+  // console.log(searchCriteria);
+
+  if (searchCriteria.cabin == "economy") {
+    await Flightmodel.find({
+      From: searchCriteria.from,
+      To: searchCriteria.to,
+      FlightDate: searchCriteria.departureDate,
+      NumberOfEconomySeats: { $gte: searchCriteria.numberOfPassengers },
+    }, (err, result) => {
+      if (!err) {
+        // console.log(result);
+        res.send(result);
+      }
+    }).clone()
+  } else if (searchCriteria.cabin == "business") {
+    await Flightmodel.find({
+      From: searchCriteria.from,
+      To: searchCriteria.to,
+      FlightDate: searchCriteria.departureDate,
+      NumberOfBusinessSeats: { $gte: searchCriteria.numberOfPassengers },
+    }, (err, result) => {
+      if (!err) {
+        // console.log(result);
+        res.send(result);
+      }
+    }).clone()
+  } else if (searchCriteria.cabin == "first") {
+    await Flightmodel.find({
+      From: searchCriteria.from,
+      To: searchCriteria.to,
+      FlightDate: searchCriteria.departureDate,
+      NumberOfFirstSeats: { $gte: searchCriteria.numberOfPassengers },
+    }, (err, result) => {
+      if (!err) {
+        // console.log(result);
+        res.send(result);
+      }
+    }).clone()
+  }
 
 });
 
-App.get('/Itinerary/:userId/:departureId/:returnId/:num/:Cabin', (req,res) =>{
+
+App.post('/confirmReservation', async (req, res) =>{
+
+  const reservationData = req.body;
+  const reservation = new Reservationmodel({
+    UserId: reservationData.userId,
+    DepFlight: reservationData.selectedFlightIDDep,
+    RetFlight: reservationData.selectedFlightIDRet,
+    NumSeats: reservationData.numberOfPassengers,
+    Seats: "A1-A2",
+    Cabin: reservationData.Cabin
+  });
+  await reservation.save();
+  console.log("reservation added!");
+  res.send("reservation Added!");
+
+});
+
+App.get('/Summary/:departureId/:returnId/:num/:Cabin', async (req, res) => {
   console.log("here");
-  const  userId = req.params.userId;
-  const  departureId = req.params.departureId;
-  const  returnId = req.params.returnId;
-  const Query = { UserId : userId , DepFlight  : departureId ,RetFlight : returnId}
-  const Obj = {             
+  //var departureId = req.params.departureId;
+  //console.log(departureId);
+  //var returnId = req.params.returnId;
+  //console.log(returnId);
+  const departureId = mongoose.Types.ObjectId(req.params.departureId);
+  const returnId = mongoose.Types.ObjectId(req.params.returnId);
+  const Query = { _id: { $in: [departureId, returnId] } };
+  //console.log(Query);
+
+
+  Flightmodel.find(Query, (err, docs) => {
+    // if(err) throw err;
+    if (docs) {
+      console.log(docs);
+      res.send(docs);
+    }
+  })
+
+
+
+});
+
+App.get('/Itinerary/:userId/:departureId/:returnId/:num/:Cabin', (req, res) => {
+  console.log("here");
+  const userId = req.params.userId;
+  const departureId = req.params.departureId;
+  const returnId = req.params.returnId;
+  const Query = { UserId: userId, DepFlight: departureId, RetFlight: returnId }
+  const Obj = {
     arrayOne: [],
     arrayTwo: []
-};
-  
-     ReservationsModel.findOne(Query,(err,docs) =>{
-       // if(err) throw err;
-        if(docs){
-          console.log(docs);
-          Obj.arrayOne.push(docs);
-          console.log("1");
-         console.log(Obj.arrayOne);
-            
-        }
-    })
-    
-  Flightmodel.findById(departureId,(err,docs) =>{
+  };
+
+  ReservationsModel.findOne(Query, (err, docs) => {
+    // if(err) throw err;
+    if (docs) {
+      console.log(docs);
+      Obj.arrayOne.push(docs);
+      console.log("1");
+      console.log(Obj.arrayOne);
+
+    }
+  })
+
+  Flightmodel.findById(departureId, (err, docs) => {
     Obj.arrayOne.push(docs);
     console.log(Obj.arrayOne);
-            
+
     // a.push(docs);
     // console.log("2");
     // console.log(a);
   })
-  Flightmodel.findById(returnId,(err,docs) =>{
+  Flightmodel.findById(returnId, (err, docs) => {
     Obj.arrayOne.push(docs);
     console.log(Obj.arrayOne);
 
@@ -351,33 +419,34 @@ App.get('/Itinerary/:userId/:departureId/:returnId/:num/:Cabin', (req,res) =>{
 
 });
 
-App.post('/reserve/:userId/:departureId/:returnId/:num/:Cabin',async(req,res) =>{
 
-  const  userId = req.params.userId;
-  const  departureId = req.params.departureId;
-  const  returnId = req.params.returnId;
-   console.log("reserve");
-   const Query = { UserId : userId , DepFlight  : departureId ,RetFlight : returnId}
-   console.log(Query);
-   ReservationsModel.findOne(Query,(err,docs) =>{
-     
-     
-      if(docs){
-        const reservation = new ReservationsModel({
-          UserId : req.params.userId,
-      DepFlight : req.params.departureId,
-      RetFlight : req.params.returnId,
-      NumSeats : req.params.num,
-      Seats : "A1-A2",
-      Cabin : req.params.Cabin
-      
-        });
-      
-        reservation.save();
-         
-      }
+
+
+
+App.post('/reserve/:userId/:departureId/:returnId/:num/:Cabin', async (req, res) => {
+
+  
+  const userId = req.params.userId;
+  const departureId = req.params.departureId;
+  const returnId = req.params.returnId;
+  console.log("reserve");
+  const Query = { UserId: userId, DepFlight: departureId, RetFlight: returnId }
+  console.log(Query);
+  ReservationsModel.findOne(Query, (err, docs) => {
+
+
+    if (!docs) {
+      const reservation = new ReservationsModel({
+        UserId: req.params.userId,
+        DepFlight: req.params.departureId,
+        RetFlight: req.params.returnId,
+        NumSeats: req.params.num,
+        Seats: "A1-A2",
+        Cabin: req.params.Cabin
+      });
+      reservation.save();
+    }
   })
- 
 });
 
 const flightaya = new Flightmodel({
@@ -390,24 +459,24 @@ const flightaya = new Flightmodel({
   NumberOfFirstSeats: "16",
   ArrivalTime: "11:00",
   DepartureTime: "12:00",
-  Seats : [
-    [{id: 1, number: 1, isSelected: true, tooltip: 'Reserved by you'}, {id: 2, number: 2, tooltip: 'Cost: 15$'}, null, {id: 3, number: '3', isReserved: true, orientation: 'east', tooltip: 'Reserved by Rogger'}, {id: 4, number: '4', orientation: 'west'}, null, {id: 5, number: 5}, {id: 6, number: 6}],
-    [{id: 7, number: 1, isReserved: true, tooltip: 'Reserved by Matthias Nadler'}, {id: 8, number: 2, isReserved: true}, null, {id: 9, number: '3', isReserved: true, orientation: 'east'}, {id: 10, number: '4', orientation: 'west'}, null, {id: 11, number: 5}, {id: 12, number: 6}],
-    [{id: 13, number: 1}, {id: 14, number: 2}, null, {id: 15, number: 3, isReserved: true, orientation: 'east'}, {id: 16, number: '4', orientation: 'west'}, null, {id: 17, number: 5}, {id: 18, number: 6}],
-    [{id: 19, number: 1, tooltip: 'Cost: 25$'}, {id: 20, number: 2}, null, {id: 21, number: 3, orientation: 'east'}, {id: 22, number: '4', orientation: 'west'}, null, {id: 23, number: 5}, {id: 24, number: 6}],
-    [{id: 25, number: 1, isReserved: true}, {id: 26, number: 2, orientation: 'east'}, null, {id: 27, number: '3', isReserved: true}, {id: 28, number: '4', orientation: 'west'}, null,{id: 29, number: 5, tooltip: 'Cost: 11$'}, {id: 30, number: 6, isReserved: true}],
-    [{id: 25, number: 1, isReserved: true}, {id: 26, number: 2, orientation: 'east'}, null, {id: 27, number: '3', isReserved: true}, {id: 28, number: '4', orientation: 'west'}, null,{id: 29, number: 5, tooltip: 'Cost: 11$'}, {id: 30, number: 6, isReserved: true}],
-    [{id: 25, number: 1, isReserved: true}, {id: 26, number: 2, orientation: 'east'}, null, {id: 27, number: '3', isReserved: true}, {id: 28, number: '4', orientation: 'west'}, null,{id: 29, number: 5, tooltip: 'Cost: 11$'}, {id: 30, number: 6, isReserved: true}],
-    [{id: 25, number: 1, isReserved: true}, {id: 26, number: 2, orientation: 'east'}, null, {id: 27, number: '3', isReserved: true}, {id: 28, number: '4', orientation: 'west'}, null,{id: 29, number: 5, tooltip: 'Cost: 11$'}, {id: 30, number: 6, isReserved: true}],
-    [{id: 25, number: 1, isReserved: true}, {id: 26, number: 2, orientation: 'east'}, null, {id: 27, number: '3', isReserved: true}, {id: 28, number: '4', orientation: 'west'}, null,{id: 29, number: 5, tooltip: 'Cost: 11$'}, {id: 30, number: 6, isReserved: true}],
-    [{id: 25, number: 1, isReserved: true}, {id: 26, number: 2, orientation: 'east'}, null, {id: 27, number: '3', isReserved: true}, {id: 28, number: '4', orientation: 'west'}, null,{id: 29, number: 5, tooltip: 'Cost: 11$'}, {id: 30, number: 6, isReserved: true}],
-    [{id: 25, number: 1, isReserved: true}, {id: 26, number: 2, orientation: 'east'}, null, {id: 27, number: '3', isReserved: true}, {id: 28, number: '4', orientation: 'west'}, null,{id: 29, number: 5, tooltip: 'Cost: 11$'}, {id: 30, number: 6, isReserved: true}],
-    [{id: 25, number: 1, isReserved: true}, {id: 26, number: 2, orientation: 'east'}, null, {id: 27, number: '3', isReserved: true}, {id: 28, number: '4', orientation: 'west'}, null,{id: 29, number: 5, tooltip: 'Cost: 11$'}, {id: 30, number: 6, isReserved: true}],
-    [{id: 25, number: 1, isReserved: true}, {id: 26, number: 2, orientation: 'east'}, null, {id: 27, number: '3', isReserved: true}, {id: 28, number: '4', orientation: 'west'}, null,{id: 29, number: 5, tooltip: 'Cost: 11$'}, {id: 30, number: 6, isReserved: true}],
-    [{id: 25, number: 1, isReserved: true}, {id: 26, number: 2, orientation: 'east'}, null, {id: 27, number: '3', isReserved: true}, {id: 28, number: '4', orientation: 'west'}, null,{id: 29, number: 5, tooltip: 'Cost: 11$'}, {id: 30, number: 6, isReserved: true}],
-    [{id: 25, number: 1, isReserved: true}, {id: 26, number: 2, orientation: 'east'}, null, {id: 27, number: '3', isReserved: true}, {id: 28, number: '4', orientation: 'west'}, null,{id: 29, number: 5, tooltip: 'Cost: 11$'}, {id: 30, number: 6, isReserved: true}],
-    [{id: 25, number: 1, isReserved: true}, {id: 26, number: 2, orientation: 'east'}, null, {id: 27, number: '3', isReserved: true}, {id: 28, number: '4', orientation: 'west'}, null,{id: 29, number: 5, tooltip: 'Cost: 11$'}, {id: 30, number: 6, isReserved: true}],
+  Seats: [
+    [{ id: 1, number: 1, isSelected: true, tooltip: 'Reserved by you' }, { id: 2, number: 2, tooltip: 'Cost: 15$' }, null, { id: 3, number: '3', isReserved: true, orientation: 'east', tooltip: 'Reserved by Rogger' }, { id: 4, number: '4', orientation: 'west' }, null, { id: 5, number: 5 }, { id: 6, number: 6 }],
+    [{ id: 7, number: 1, isReserved: true, tooltip: 'Reserved by Matthias Nadler' }, { id: 8, number: 2, isReserved: true }, null, { id: 9, number: '3', isReserved: true, orientation: 'east' }, { id: 10, number: '4', orientation: 'west' }, null, { id: 11, number: 5 }, { id: 12, number: 6 }],
+    [{ id: 13, number: 1 }, { id: 14, number: 2 }, null, { id: 15, number: 3, isReserved: true, orientation: 'east' }, { id: 16, number: '4', orientation: 'west' }, null, { id: 17, number: 5 }, { id: 18, number: 6 }],
+    [{ id: 19, number: 1, tooltip: 'Cost: 25$' }, { id: 20, number: 2 }, null, { id: 21, number: 3, orientation: 'east' }, { id: 22, number: '4', orientation: 'west' }, null, { id: 23, number: 5 }, { id: 24, number: 6 }],
+    [{ id: 25, number: 1, isReserved: true }, { id: 26, number: 2, orientation: 'east' }, null, { id: 27, number: '3', isReserved: true }, { id: 28, number: '4', orientation: 'west' }, null, { id: 29, number: 5, tooltip: 'Cost: 11$' }, { id: 30, number: 6, isReserved: true }],
+    [{ id: 25, number: 1, isReserved: true }, { id: 26, number: 2, orientation: 'east' }, null, { id: 27, number: '3', isReserved: true }, { id: 28, number: '4', orientation: 'west' }, null, { id: 29, number: 5, tooltip: 'Cost: 11$' }, { id: 30, number: 6, isReserved: true }],
+    [{ id: 25, number: 1, isReserved: true }, { id: 26, number: 2, orientation: 'east' }, null, { id: 27, number: '3', isReserved: true }, { id: 28, number: '4', orientation: 'west' }, null, { id: 29, number: 5, tooltip: 'Cost: 11$' }, { id: 30, number: 6, isReserved: true }],
+    [{ id: 25, number: 1, isReserved: true }, { id: 26, number: 2, orientation: 'east' }, null, { id: 27, number: '3', isReserved: true }, { id: 28, number: '4', orientation: 'west' }, null, { id: 29, number: 5, tooltip: 'Cost: 11$' }, { id: 30, number: 6, isReserved: true }],
+    [{ id: 25, number: 1, isReserved: true }, { id: 26, number: 2, orientation: 'east' }, null, { id: 27, number: '3', isReserved: true }, { id: 28, number: '4', orientation: 'west' }, null, { id: 29, number: 5, tooltip: 'Cost: 11$' }, { id: 30, number: 6, isReserved: true }],
+    [{ id: 25, number: 1, isReserved: true }, { id: 26, number: 2, orientation: 'east' }, null, { id: 27, number: '3', isReserved: true }, { id: 28, number: '4', orientation: 'west' }, null, { id: 29, number: 5, tooltip: 'Cost: 11$' }, { id: 30, number: 6, isReserved: true }],
+    [{ id: 25, number: 1, isReserved: true }, { id: 26, number: 2, orientation: 'east' }, null, { id: 27, number: '3', isReserved: true }, { id: 28, number: '4', orientation: 'west' }, null, { id: 29, number: 5, tooltip: 'Cost: 11$' }, { id: 30, number: 6, isReserved: true }],
+    [{ id: 25, number: 1, isReserved: true }, { id: 26, number: 2, orientation: 'east' }, null, { id: 27, number: '3', isReserved: true }, { id: 28, number: '4', orientation: 'west' }, null, { id: 29, number: 5, tooltip: 'Cost: 11$' }, { id: 30, number: 6, isReserved: true }],
+    [{ id: 25, number: 1, isReserved: true }, { id: 26, number: 2, orientation: 'east' }, null, { id: 27, number: '3', isReserved: true }, { id: 28, number: '4', orientation: 'west' }, null, { id: 29, number: 5, tooltip: 'Cost: 11$' }, { id: 30, number: 6, isReserved: true }],
+    [{ id: 25, number: 1, isReserved: true }, { id: 26, number: 2, orientation: 'east' }, null, { id: 27, number: '3', isReserved: true }, { id: 28, number: '4', orientation: 'west' }, null, { id: 29, number: 5, tooltip: 'Cost: 11$' }, { id: 30, number: 6, isReserved: true }],
+    [{ id: 25, number: 1, isReserved: true }, { id: 26, number: 2, orientation: 'east' }, null, { id: 27, number: '3', isReserved: true }, { id: 28, number: '4', orientation: 'west' }, null, { id: 29, number: 5, tooltip: 'Cost: 11$' }, { id: 30, number: 6, isReserved: true }],
+    [{ id: 25, number: 1, isReserved: true }, { id: 26, number: 2, orientation: 'east' }, null, { id: 27, number: '3', isReserved: true }, { id: 28, number: '4', orientation: 'west' }, null, { id: 29, number: 5, tooltip: 'Cost: 11$' }, { id: 30, number: 6, isReserved: true }],
   ]
- 
+
 });
 flightaya.save();
