@@ -6,7 +6,8 @@ import AdminNavBar from './Components/admin/NavBar.js'
 import UserNavBar from './Components/user/NavBar.js'
 
 import Home from './routes/public/Home.js'
-
+import UserEdit from './routes/user/Edit.js'
+import Usereditdata from './routes/user/editdata.js'
 import AdminHome from './routes/admin/Home.js'
 import AdminSearch from './routes/admin/Search.js'
 import AdminAddFlight from './routes/admin/AddFlight.js'
@@ -51,6 +52,9 @@ export default class App extends Component {
             <Route path="/home" element={<UserHome />} />
             <Route path="/bookflight" element={<UserBookFlight />} />
             <Route path="/pickseats/:booking" element={<FlightSeatPickerParent/>} />
+            <Route path="/edit" element={<UserEdit/>}/>
+            <Route path="/editdata/:username/:firstname/:lastname/:email/:passport" element={<Usereditdata/>}/>
+            
           </Routes>
 
         </div>
