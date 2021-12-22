@@ -159,7 +159,7 @@ App.get('/searchflightbyId', async (req, res) => {
 
 });
 App.put('/update', async (req, res) => {
-  console.log("linah");
+  // console.log("linah");
   const flight = req.body;
   console.log(flight);
   Object.keys(flight).forEach(key => {
@@ -391,10 +391,45 @@ App.post('/confirmReservation', async (req, res) =>{
     SeatsRet:[],
   });
   await reservation.save();
-  console.log("reservation added!");
-  res.send("reservation Added!");
+
 
   //now its time to decrement available seats in table flights
+    await Flightmodel.findById(reservationData.selectedFlightIDDep, async (err, depFlight) => {
+      if (!err) {
+
+        if (reservationData.cabin == "economy") {
+          depFlight.NumberOfEconomySeats= depFlight.NumberOfEconomySeats - reservationData.numberOfPassengers;
+        }
+        else if(reservationData.cabin == "business" ){
+          depFlight.NumberOfBusinessSeats= depFlight.NumberOfBusinessSeats - reservationData.numberOfPassengers;
+        }else{
+          depFlight.NumberOfFirstSeats= depFlight.NumberOfFirstSeats - reservationData.numberOfPassengers;
+        }
+       
+        await Flightmodel.updateOne({_id: reservationData.selectedFlightIDDep}, depFlight);
+
+      }
+    }).clone();
+
+    await Flightmodel.findById(reservationData.selectedFlightIDRet, async (err, retFlight) => {
+      if (!err) {
+
+        if (reservationData.cabin == "economy") {
+          retFlight.NumberOfEconomySeats= retFlight.NumberOfEconomySeats - reservationData.numberOfPassengers;
+        }
+        else if(reservationData.cabin == "business" ){
+          retFlight.NumberOfBusinessSeats= retFlight.NumberOfBusinessSeats - reservationData.numberOfPassengers;
+        }else{
+          retFlight.NumberOfFirstSeats= retFlight.NumberOfFirstSeats - reservationData.numberOfPassengers;
+        }
+       
+        await Flightmodel.updateOne({_id: reservationData.selectedFlightIDRet}, retFlight);
+
+      }
+    }).clone();
+
+    console.log("reservation added!");
+    res.send("reservation Added!");
 
 });
 
