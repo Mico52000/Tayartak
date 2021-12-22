@@ -1,0 +1,16 @@
+.cardbg{
+    background-color: #189AB4;
+    width : 700px;
+    flex-direction :row
+}
+.departure{
+   text-align:left;
+   font-size:15px;
+}
+.return{
+    text-align:left;
+    font-size:15px;
+ }
+.book{
+    font-size :20px;
+}
