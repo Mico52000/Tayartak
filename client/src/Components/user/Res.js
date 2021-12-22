@@ -96,7 +96,7 @@ export default class res extends Component{
             <h2>Cabin : {this.state.Cabin}</h2>
             </div>
             <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" href ={`Popup/${BookingId}`} >Cancel</a>
-            <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" href ={`pickaseat/${BookingId}`} >Pick A Seat</a>
+            <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" href ={`pickseats/${BookingId}`} >Pick A Seat</a>
             <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" href ={`viewticket/${BookingId}`} >View Ticket</a>
             {/* <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" onClick={(event) =>this.buttonClick(ObjectId,event)}>Delete</a> */}
           {/* //  <a class ="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" onClick ={() =>{var result = window.confirm("Want to delete?"); */}

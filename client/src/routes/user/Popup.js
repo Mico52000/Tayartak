@@ -9,7 +9,14 @@ function Popup(){
     const[flag,setFlag]=useState(true);
     const cancelres=(id)=>{
         console.log(id);
+        const res = {
+            resid :id
+        }
+        Axios.put(`http://localhost:8000/removeSeats`,res);
+
+
          Axios.delete(`http://localhost:8000/deleteres/${id}`);
+         
          setFlag(false);
     }
     return(flag)?(

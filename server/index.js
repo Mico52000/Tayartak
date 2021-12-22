@@ -572,8 +572,146 @@ App.post('/reserve/:userId/:departureId/:returnId/:num/:Cabin', async (req, res)
   })
 });
 
-App.post('/removeSeats')
 
+App.put('/removeSeats',async (req,resp)=> {
+  console.log(req.body)
+    const resid = req.body.resid;
+    console.log(resid);
+    var reservation = {};
+  Reservationmodel.findById(resid,async function(err,result){
+   
+      reservation = result;
+      console.log(reservation);
+  const {DepFlight,SeatsDep,RetFlight,SeatsRet,cabin} = reservation;
+  var DepartureSeats =[];
+  var ReturnSeats =[];
+  Flightmodel.findById(DepFlight, async function (err, result) {
+    if (err) {
+      alert(err);
+    }
+    else {
+      try {
+         DepartureSeats = result.Seats;
+         DepartureSeats.forEach(row => {
+          row.forEach(seat => {
+            if(seat!=null){
+            if(SeatsDep.includes(seat.id))
+            {
+              console.log(seat.id);
+              seat.isReserved = false;
+            }
+          }
+          })
+      });
+      console.log(DepFlight);
+      var num = mongoose.Types.ObjectId(DepFlight);
+  
+  const nid = { _id: num };
+  try {
+
+    await Flightmodel.updateOne(nid, {Seats:DepartureSeats});
+
+    resp.send("Updated!");
+
+
+  } catch (err) {
+    console.log(err);
+  }
+
+      
+      }
+      catch (err) {
+        resp.send("oops and error occured")
+      }
+
+    }
+  });
+  Flightmodel.findById(RetFlight, async function (err, result) {
+    if (err) {
+      alert(err);
+    }
+    else {
+      try {
+         ReturnSeats = result.Seats;
+         ReturnSeats.forEach(row => {
+          row.forEach(seat => {
+            if(seat!=null){
+            if(SeatsRet.includes(seat.id)){
+              seat.isReserved = false;
+            }
+            }
+          })
+          });
+          var num = mongoose.Types.ObjectId(RetFlight);
+  
+          const nid = { _id: num };
+          try {
+            console.log(ReturnSeats);
+            await Flightmodel.updateOne(nid, {Seats:ReturnSeats});
+        
+        
+        
+          } catch (err) {
+            console.log(err);
+          }
+      
+      }
+      catch (err) {
+        
+      }
+
+    }
+  });
+
+
+
+  
+
+    
+    
+
+
+
+
+
+    await Flightmodel.findById(DepFlight, async (err, depFlight) => {
+      if (!err) {
+
+        if (cabin == "economy") {
+          depFlight.NumberOfEconomySeats= depFlight.NumberOfEconomySeats - SeatsDep.length;
+        }
+        else if(cabin == "business" ){
+          depFlight.NumberOfBusinessSeats= depFlight.NumberOfBusinessSeats -  SeatsDep.length;
+        }else{
+          depFlight.NumberOfFirstSeats= depFlight.NumberOfFirstSeats -  SeatsDep.length;
+        }
+       
+        await Flightmodel.updateOne({_id: DepFlight}, depFlight);
+
+      }
+    }).clone();
+
+    await Flightmodel.findById(RetFlight, async (err, retFlight) => {
+      if (!err) {
+
+        if (cabin == "economy") {
+          retFlight.NumberOfEconomySeats= retFlight.NumberOfEconomySeats - SeatsRet.length;
+        }
+        else if(cabin == "business" ){
+          retFlight.NumberOfBusinessSeats= retFlight.NumberOfBusinessSeats - SeatsRet.length;
+        }else{
+          retFlight.NumberOfFirstSeats= retFlight.NumberOfFirstSeats - SeatsRet.length;
+        }
+       
+        await Flightmodel.updateOne({_id: RetFlight}, retFlight);
+
+      }
+    }).clone();
+      
+  })
+
+  
+  });
 
 //const flightaya = new Flightmodel({
 //   From: "hopa",
