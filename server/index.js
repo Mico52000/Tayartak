@@ -151,7 +151,7 @@ App.get('/searchflightbyId', async (req, res) => {
         res.send(seatobj);
       }
       catch (err) {
-        alert(err);
+        res.send("oops and error occured")
       }
 
     }
