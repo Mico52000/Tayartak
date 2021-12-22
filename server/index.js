@@ -5,12 +5,11 @@ const mongoose = require('mongoose');
 const Flightmodel = require('./models/Flights');
 const Reservationmodel = require('./models/Reservations');
 const UsersModel = require('./models/Users');
+const nodemailer=require('nodemailer');
 const cors = require('cors');
 App.use(express.json());
 App.use(cors());
 const port = process.env.PORT || 8000;
-
-
 mongoose.connect(process.env.MONGO_LINK, { useNewUrlParser: true }).then(result => console.log("MongoDB is now connected"))
   .catch(err => console.log(err));
 
@@ -19,7 +18,13 @@ App.listen(port, () => {
   console.log("You are connected!")
 });
 
-
+var transporter =nodemailer.createTransport({
+  service:'gmail',
+  auth:{
+    user:'projectaclsp2@gmail.com',
+    pass:'22122021'
+  }
+});
 App.post('/addflight', async (req, res) => {
 
 
@@ -37,7 +42,7 @@ App.post('/addflight', async (req, res) => {
     Seats: []
   });
 
-
+ 
   var totalseats = flight.NumberOfBusinessSeats + flight.NumberOfFirstSeats + flight.NumberOfEconomySeats;
   if (totalseats % 6 != 0) {
     res.send("The total number of seats must be a multiple of 6");
@@ -183,7 +188,62 @@ App.put('/update', async (req, res) => {
 
 });
 
-
+App.delete("/deleteres/:id",async (req,res) =>{
+  // console.log(req.params.id);
+  let user="";
+   id =mongoose.Types.ObjectId(req.params.id);
+   var myquery = { _id: id };
+   Reservationmodel.findById(id, function (err, docs) {
+     console.log(docs);
+     if (err){
+         console.log(err);
+     }
+     else{
+        user=mongoose.Types.ObjectId(docs.UserId);
+        //mongoose.Types.ObjectId(docs.UserId);
+         console.log("Result : ", user);
+         UsersModel.findById(user, function (err, docs) {
+           if (err){
+               console.log(err);
+           }
+           else{
+              
+               console.log(docs);
+               var mailOptions={
+                 from:'projectaclsp2@gmail.com',
+                 to:docs.Email,
+                 subject:'Canceled Reservation',
+                 text:'This mail is to Inform you that you reservation with number :'+id+' has been cancelled'+'  TotalPrice is '+ docs.TotalPrice
+               };
+               transporter.sendMail(mailOptions,function(err,info){
+                 if(err){
+                   console.log(err);
+                 }else{
+                   console.log('Email')
+                }
+               }
+                );
+           }
+         });
+     }
+ });
+ 
+  
+    try{
+  
+     await Reservationmodel.deleteOne(myquery),function(err,docs){
+         if(err) throw err;
+         if(docs){
+             console.log("true");
+         }
+     };
+     //res.send("item deleted");
+    }
+    catch(error){
+     console.log(error);
+    }
+    
+    } );
 App.put('/updateResDep', async (req, res) => {
 
   const reservation = req.body;
@@ -203,7 +263,28 @@ App.put('/updateResDep', async (req, res) => {
   }
 
 });
+App.get('/reservationsgetBooking',async (req,resp)=>{
+  const userId = '61bff21874e339983be37a00';
+   // console.log("dakhal");
+  const Query ={UserId : userId};
+    Reservationmodel.find(Query,  (err,docs) =>{
+  
+      resp.send(docs);
+        
+      })});  
 
+App.get('/reservationsgetFlights',async (req,resp)=>{
+   const id = req.query.flightId;
+  // console.log(id);
+  Flightmodel.findById(id,(err,doc) =>{
+    
+    
+    
+       resp.send(doc) ;
+    }
+  );
+}
+);
 App.put('/updateResRet', async (req, res) => {
 
   const reservation = req.body;
