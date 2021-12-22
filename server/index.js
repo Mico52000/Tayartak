@@ -753,6 +753,26 @@ App.put('/removeSeats',async (req,resp)=> {
   
   });
 
+  App.get('/ticket',async (req,resp)=>{
+  
+    const id = req.query.Id;
+    console.log(id);
+      Reservationmodel.findById(id,(err,docs) =>{
+      console.log(docs);
+        resp.send(docs);
+          
+        })});   
+        App.get('/ticketBooking',async (req,resp)=>{
+      
+          const id = req.query.Id;
+          console.log(id);
+          Reservationmodel.findById(id,  (err,docs) =>{
+            console.log(docs);
+            resp.send(docs);
+              
+            })}); 
+
+
 //const flightaya = new Flightmodel({
 //   From: "hopa",
 //   To: "opa",
