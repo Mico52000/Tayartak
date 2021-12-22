@@ -14,7 +14,7 @@ export default class SearchBox extends Component{
             <a class="link dim white dib mr3" href="/user/home" title="Home">Home</a>
             <a class="link dim white dib mr3" href={`/user/pickseats/${"61c212c932b64851341b1e7d"}`} title="Home">Pick seats</a>
               <a class="link dim white dib mr3" href="/" title="Search">Sign Out</a>
-
+              <a class="link dim white dib mr3" href="/user/edit" title="Edit">View Profile</a>
             </nav>
           </header>
           </div>

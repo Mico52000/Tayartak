@@ -3,7 +3,8 @@ const express = require('express');
 const App = express();
 const mongoose = require('mongoose');
 const Flightmodel = require('./models/Flights');
-const Reservationmodel = require('./models/Reservations')
+const Reservationmodel = require('./models/Reservations');
+const UsersModel = require('./models/Users');
 const cors = require('cors');
 App.use(express.json());
 App.use(cors());
@@ -80,6 +81,47 @@ App.post('/addflight', async (req, res) => {
    await flight.save();
    res.send("Flight Added!");
 }
+});
+App.get('/edit',async (req, res) =>{
+  let user=mongoose.Types.ObjectId("61bff21874e339983be37a00");
+    UsersModel.findById(user, function (err, docs) {
+      if (err){
+          console.log(err);
+      }
+      else{
+        console.log(docs);
+        res.send(docs);
+      }
+    });
+});
+App.put('/updateuser',async(req,res)=>{
+  
+  const user=req.body;
+  console.log(user);
+  var x=0;
+          Object.keys(user).forEach(key => {
+              if (user[key] == null || user[key]==""||user[key]==0) {
+                delete user[key];
+                x++;
+              }
+            });
+            console.log(x);
+            console.log(x==6);
+           
+ var num =mongoose.Types.ObjectId("61bff21874e339983be37a00");
+  //console.log(num);
+  const nid= {_id:num};
+  try{
+      
+        await UsersModel.updateOne(nid,user);
+          if(x!=6){
+         res.send("Updated!");
+          }
+          
+    }catch(err){
+      console.log(err);
+  }
+ 
 });
 App.get('/searchReservation', async (req, res) => {
   console.log(req.query.resid);
