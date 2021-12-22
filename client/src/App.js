@@ -18,6 +18,7 @@ import UserHome from './routes/user/Home.js'
 import UserBookFlight from './routes/user/bookTrip/BookTrip.js'
 import FlightSeatPickerParent from './routes/user/FlightSeatPickerParent.js';
 import Reservations from './routes/user/Reservations.js';
+import Itinerary from './routes/user/Itinerary.js';
 export default class App extends Component {
 
 
@@ -55,6 +56,7 @@ export default class App extends Component {
             <Route path="/editdata/:username/:firstname/:lastname/:email/:passport" element={<Usereditdata/>}/>
             <Route path="/reservations" element ={<Reservations/>} />
             <Route path="/Popup/:id" element={<Popup/>}/>
+            <Route path="/viewticket/:BookingId" element={<Itinerary/>}/>
           </Routes>
 
         </div>

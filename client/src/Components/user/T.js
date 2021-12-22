@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 
-//import './Card.css';
+import '../admin/Card.css'
 import './Res.css';
 
 import Axios from 'axios';
 
-export default class res extends Component{
+export default class T extends Component{
     constructor({props}){
     super();
     this.state={
@@ -25,7 +25,6 @@ export default class res extends Component{
         retDtime :"",
         retAtime :"",
         retSeats :"",
-        TotalPrice :0
         
     }
     
@@ -61,7 +60,7 @@ export default class res extends Component{
        
     render()
     {
-        const {BookingId,departureId,returnId,Cab,seatsDep,seatsRet,TotalPrice} = this.props;
+        const {BookingId,departureId,returnId,Cab,seatsDep,seatsRet} = this.props;
         
 
                 
@@ -73,7 +72,6 @@ export default class res extends Component{
         <div className=" cardbg tc bg-blue  dib br3 ma2 pa3  shadow-5 w5 ">
             <div class ="book">
             <h2>BookingId : {BookingId}</h2>
-            <h1>Total Price :{TotalPrice}</h1>
             </div>
             <div class="departure">
             <h1> Departure</h1>
@@ -97,9 +95,7 @@ export default class res extends Component{
             <h2>Seats : {this.state.retSeats}</h2>
             <h2>Cabin : {this.state.Cabin}</h2>
             </div>
-            <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" href ={`Popup/${BookingId}`} >Cancel</a>
-            <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" href ={`pickseats/${BookingId}`} >Pick A Seat</a>
-            <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" href ={`viewticket/${BookingId}`} >View Ticket</a>
+           
             {/* <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" onClick={(event) =>this.buttonClick(ObjectId,event)}>Delete</a> */}
           {/* //  <a class ="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" onClick ={() =>{var result = window.confirm("Want to delete?"); */}
 
