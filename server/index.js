@@ -394,6 +394,8 @@ App.post('/confirmReservation', async (req, res) =>{
   console.log("reservation added!");
   res.send("reservation Added!");
 
+  //now its time to decrement available seats in table flights
+
 });
 
 App.get('/Summary/:departureId/:returnId/:num/:Cabin', async (req, res) => {
