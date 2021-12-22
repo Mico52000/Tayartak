@@ -309,7 +309,7 @@ export default class FlightSeatPicker extends Component {
               />
             </div>
 
-
+            <p>*If the button is greyed out then this reservation has already booked seats</p>
             <Button disabled={this.state.DisablebuttonA} variant="contained" onClick={this.departureSeatsClick}>Submit departure tickets</Button>
 
             <h1>Return flight seat Picker </h1>
@@ -329,7 +329,7 @@ export default class FlightSeatPicker extends Component {
             </div>
 
 
-
+            <p>*If the button is greyed out then this reservation has already booked seats</p>
             <Button disabled={this.state.DisablebuttonB} variant="contained" onClick={this.returnSeatsClick}>Submit return tickets</Button>
           </div>
         )
