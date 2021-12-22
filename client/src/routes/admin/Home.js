@@ -14,7 +14,7 @@ export default class Home extends Component {
       return (
         <div className="Home">
           
-            <h2>Welcome to admin's the homepage!</h2>
+            <h2>Welcome to the admin's homepage!</h2>
             
           
     

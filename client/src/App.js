@@ -16,6 +16,7 @@ import AdminUpdate from './routes/admin/Update.js'
 
 
 import UserHome from './routes/user/Home.js'
+import UserBookFlight from './routes/user/bookTrip/BookTrip.js'
 import FlightSeatPickerParent from './routes/user/FlightSeatPickerParent.js';
 
 export default class App extends Component {
@@ -49,6 +50,7 @@ export default class App extends Component {
           <UserNavBar />
           <Routes>
             <Route path="/home" element={<UserHome />} />
+            <Route path="/bookflight" element={<UserBookFlight />} />
             <Route path="/pickseats/:booking" element={<FlightSeatPickerParent/>} />
             <Route path="/edit" element={<UserEdit/>}/>
             <Route path="/editdata/:username/:firstname/:lastname/:email/:passport" element={<Usereditdata/>}/>
@@ -64,20 +66,6 @@ export default class App extends Component {
 
       <div className="App">
 
-        {/* <NavBar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-
-          <Route path="/admin/home" element={<AdminHome />} />
-          <Route path="/admin/search" element={<AdminSearch />} />
-          <Route path="/admin/addflight" element={<AdminAddFlight />} />
-          <Route path ='/admin/displayall' element = {<AdminDisplayAll/>}/>
-          <Route path="/admin/update/:id" element={<AdminUpdate/>} /> 
-     
-        </Routes> */}
-
-
-        {/* here add routes where you dont want a navbar displayed */}
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="admin/*" element={<AdminRoutes />} />
