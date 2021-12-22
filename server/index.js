@@ -30,7 +30,8 @@ App.post('/addflight', async (req, res) => {
     NumberOfBusinessSeats: reqbody.NumberOfBusinessSeats,
     NumberOfFirstSeats: reqbody.NumberOfFirstSeats,
     ArrivalTime: reqbody.ArrivalTime,
-    DepartureTime: reqbody.DepartureTime
+    DepartureTime: reqbody.DepartureTime,
+    Seats:[]
   });
 
 
@@ -75,7 +76,7 @@ App.post('/addflight', async (req, res) => {
   }
   
 
-
+  flight.Seats=seats;
    await flight.save();
    res.send("Flight Added!");
 }

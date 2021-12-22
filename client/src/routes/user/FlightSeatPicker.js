@@ -24,7 +24,9 @@ export default class FlightSeatPicker extends Component {
         DepRows : [],
         retRows :[],
         DepSeats : [],
-        retSeats : []
+        retSeats : [],
+        DisablebuttonA:false,
+        DisablebuttonB:false,
       }
      
     componentDidMount(){
@@ -33,7 +35,11 @@ export default class FlightSeatPicker extends Component {
             params: {resid:bookingNumber}
           }).then((resp)=>{this.setState({MaxSeats: resp.data.NumSeats,DepFlightId : resp.data.DepFlight,RetFlightId:resp.data.RetFlight});
            this.generateRows(resp.data.DepFlight,resp.data.RetFlight);
-           this.setState({ReservationCabin : resp.data.Cabin})
+           this.setState({ReservationCabin : resp.data.Cabin});
+           if(resp.data.SeatsDep.length>0)
+              this.setState({DisablebuttonA:true});
+            if(resp.data.SeatsRet.length>0)
+              this.setState({DisablebuttonB:true});
           }).catch((err)=> alert(err));
            
     };
@@ -192,6 +198,7 @@ export default class FlightSeatPicker extends Component {
         })
       }
       departureSeatsClick =(e) => {
+        
         if(this.state.DepSeats.length!=this.state.MaxSeats)
             {
               alert(`Please select ${this.state.MaxSeats} for the departure flight`);
@@ -303,7 +310,7 @@ export default class FlightSeatPicker extends Component {
             </div>
 
 
-            <Button variant="contained" onClick={this.departureSeatsClick}>Submit departure tickets</Button>
+            <Button disabled={this.state.DisablebuttonA} variant="contained" onClick={this.departureSeatsClick}>Submit departure tickets</Button>
 
             <h1>Return flight seat Picker </h1>
             <div className='seatPicker'>
@@ -323,7 +330,7 @@ export default class FlightSeatPicker extends Component {
 
 
 
-            <Button variant="contained" onClick={this.returnSeatsClick}>Submit return tickets</Button>
+            <Button disabled={this.state.DisablebuttonB} variant="contained" onClick={this.returnSeatsClick}>Submit return tickets</Button>
           </div>
         )
       }
