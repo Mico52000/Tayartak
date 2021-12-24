@@ -96,7 +96,7 @@ App.get('/edit', async (req, res) => {
       console.log(err);
     }
     else {
-      console.log(docs);
+      // console.log(docs);
       res.send(docs);
     }
   });
@@ -104,7 +104,7 @@ App.get('/edit', async (req, res) => {
 App.put('/updateuser', async (req, res) => {
 
   const user = req.body;
-  console.log(user);
+  // console.log(user);
   var x = 0;
   Object.keys(user).forEach(key => {
     if (user[key] == null || user[key] == "" || user[key] == 0) {
@@ -112,8 +112,8 @@ App.put('/updateuser', async (req, res) => {
       x++;
     }
   });
-  console.log(x);
-  console.log(x == 6);
+  // console.log(x);
+  // console.log(x == 6);
 
   var num = mongoose.Types.ObjectId("61bff21874e339983be37a00");
   //console.log(num);
@@ -131,14 +131,14 @@ App.put('/updateuser', async (req, res) => {
 
 });
 App.get('/searchReservation', async (req, res) => {
-  console.log(req.query.resid);
+  // console.log(req.query.resid);
 
   Reservationmodel.findById(req.query.resid, function (err, result) {
     if (err) {
       alert(err);
     }
     else {
-      console.log(result);
+      // console.log(result);
       res.send(result);
     }
   })
@@ -164,9 +164,9 @@ App.get('/searchflightbyId', async (req, res) => {
 
 });
 App.put('/update', async (req, res) => {
-  console.log("linah");
+  // console.log("linah");
   const flight = req.body;
-  console.log(flight);
+  // console.log(flight);
   Object.keys(flight).forEach(key => {
     if (flight[key] == null || flight[key] == "" || flight[key] == 0) {
       delete flight[key];
@@ -194,21 +194,21 @@ App.delete("/deleteres/:id", async (req, res) => {
   id = mongoose.Types.ObjectId(req.params.id);
   var myquery = { _id: id };
   Reservationmodel.findById(id, function (err, docs) {
-    console.log(docs);
+    // console.log(docs);
     if (err) {
       console.log(err);
     }
     else {
       user = mongoose.Types.ObjectId(docs.UserId);
       //mongoose.Types.ObjectId(docs.UserId);
-      console.log("Result : ", user);
+      // console.log("Result : ", user);
       UsersModel.findById(user, function (err, docs) {
         if (err) {
           console.log(err);
         }
         else {
 
-          console.log(docs);
+          // console.log(docs);
           var mailOptions = {
             from: 'projectaclsp2@gmail.com',
             to: docs.Email,
@@ -219,7 +219,7 @@ App.delete("/deleteres/:id", async (req, res) => {
             if (err) {
               console.log(err);
             } else {
-              console.log('Email')
+              // console.log('Email')
             }
           }
           );
@@ -234,7 +234,7 @@ App.delete("/deleteres/:id", async (req, res) => {
     await Reservationmodel.deleteOne(myquery), function (err, docs) {
       if (err) throw err;
       if (docs) {
-        console.log("true");
+        // console.log("true");
       }
     };
     //res.send("item deleted");
@@ -326,7 +326,7 @@ App.put('/updateseats', async (req, res) => {
 });
 
 App.delete("/delete/:id", async (req, res) => {
-  console.log(req.params.id);
+  // console.log(req.params.id);
   var id = req.params.id;
   id = mongoose.Types.ObjectId(id);
   var myquery = { _id: id };
@@ -336,7 +336,7 @@ App.delete("/delete/:id", async (req, res) => {
     await Flightmodel.deleteOne(myquery), function (err, docs) {
       if (err) throw err;
       if (docs) {
-        console.log("true");
+        // console.log("true");
       }
     };
     res.send("item deleted");
@@ -510,13 +510,13 @@ App.post('/confirmReservation', async (req, res) => {
     }
   }).clone();
 
-  console.log("reservation added!");
+  // console.log("reservation added!");
   res.send("reservation Added!");
 
 });
 
 App.get('/Summary/:departureId/:returnId/:num/:Cabin', async (req, res) => {
-  console.log("here");
+  // console.log("here");
   //var departureId = req.params.departureId;
   //console.log(departureId);
   //var returnId = req.params.returnId;
@@ -530,7 +530,7 @@ App.get('/Summary/:departureId/:returnId/:num/:Cabin', async (req, res) => {
   Flightmodel.find(Query, (err, docs) => {
     // if(err) throw err;
     if (docs) {
-      console.log(docs);
+      // console.log(docs);
       res.send(docs);
     }
   })
@@ -540,7 +540,7 @@ App.get('/Summary/:departureId/:returnId/:num/:Cabin', async (req, res) => {
 });
 
 App.get('/Itinerary/:userId/:departureId/:returnId/:num/:Cabin', (req, res) => {
-  console.log("here");
+  // console.log("here");
   const userId = req.params.userId;
   const departureId = req.params.departureId;
   const returnId = req.params.returnId;
@@ -553,17 +553,17 @@ App.get('/Itinerary/:userId/:departureId/:returnId/:num/:Cabin', (req, res) => {
   ReservationsModel.findOne(Query, (err, docs) => {
     // if(err) throw err;
     if (docs) {
-      console.log(docs);
+      // console.log(docs);
       Obj.arrayOne.push(docs);
-      console.log("1");
-      console.log(Obj.arrayOne);
+      // console.log("1");
+      // console.log(Obj.arrayOne);
 
     }
   })
 
   Flightmodel.findById(departureId, (err, docs) => {
     Obj.arrayOne.push(docs);
-    console.log(Obj.arrayOne);
+    // console.log(Obj.arrayOne);
 
     // a.push(docs);
     // console.log("2");
@@ -571,13 +571,13 @@ App.get('/Itinerary/:userId/:departureId/:returnId/:num/:Cabin', (req, res) => {
   })
   Flightmodel.findById(returnId, (err, docs) => {
     Obj.arrayOne.push(docs);
-    console.log(Obj.arrayOne);
+    // console.log(Obj.arrayOne);
 
     // a.push(docs);
     // console.log("3");
     // console.log(a);
   })
-  console.log(Obj.arrayOne);
+  // console.log(Obj.arrayOne);
   res.send(JSON.stringify(Obj.arrayOne));
 
 });
@@ -592,9 +592,9 @@ App.post('/reserve/:userId/:departureId/:returnId/:num/:Cabin', async (req, res)
   const userId = req.params.userId;
   const departureId = req.params.departureId;
   const returnId = req.params.returnId;
-  console.log("reserve");
+  // console.log("reserve");
   const Query = { UserId: userId, DepFlight: departureId, RetFlight: returnId }
-  console.log(Query);
+  // console.log(Query);
   Reservationsmodel.findOne(Query, (err, docs) => {
 
 
@@ -614,14 +614,14 @@ App.post('/reserve/:userId/:departureId/:returnId/:num/:Cabin', async (req, res)
 
 
 App.put('/removeSeats',async (req,resp)=> {
-  console.log(req.body)
+  // console.log(req.body)
     const resid = req.body.resid;
-    console.log(resid);
+    // console.log(resid);
     var reservation = {};
   Reservationmodel.findById(resid,async function(err,result){
    
       reservation = result;
-      console.log(reservation);
+      // console.log(reservation);
   const {DepFlight,SeatsDep,RetFlight,SeatsRet,cabin} = reservation;
   var DepartureSeats =[];
   var ReturnSeats =[];
@@ -637,13 +637,13 @@ App.put('/removeSeats',async (req,resp)=> {
             if(seat!=null){
             if(SeatsDep.includes(seat.id))
             {
-              console.log(seat.id);
+              // console.log(seat.id);
               seat.isReserved = false;
             }
           }
           })
       });
-      console.log(DepFlight);
+      // console.log(DepFlight);
       var num = mongoose.Types.ObjectId(DepFlight);
   
   const nid = { _id: num };
@@ -686,7 +686,7 @@ App.put('/removeSeats',async (req,resp)=> {
   
           const nid = { _id: num };
           try {
-            console.log(ReturnSeats);
+            // console.log(ReturnSeats);
             await Flightmodel.updateOne(nid, {Seats:ReturnSeats});
         
         
@@ -756,18 +756,18 @@ App.put('/removeSeats',async (req,resp)=> {
   App.get('/ticket',async (req,resp)=>{
   
     const id = req.query.Id;
-    console.log(id);
+    // console.log(id);
       Reservationmodel.findById(id,(err,docs) =>{
-      console.log(docs);
+      // console.log(docs);
         resp.send(docs);
           
         })});   
         App.get('/ticketBooking',async (req,resp)=>{
       
           const id = req.query.Id;
-          console.log(id);
+          // console.log(id);
           Reservationmodel.findById(id,  (err,docs) =>{
-            console.log(docs);
+            // console.log(docs);
             resp.send(docs);
               
             })}); 
