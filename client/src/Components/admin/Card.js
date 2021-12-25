@@ -22,14 +22,15 @@ export default class Card extends Component{
         Axios.delete(`http://localhost:8000/delete/${Id}`
         );
         window.location.reload(false);
-        console.log(Id);
+        // console.log(Id);
     
       }
     }
        
     render()
     {
-        const {ObjectId,From,To,Date,Flightnum,ecoseats,bisseats,firstseats,arrivalt,departuret} = this.props
+        const {ObjectId,From,To,Date,Flightnum,ecoseats,bisseats,firstseats,arrivalt,departuret,
+            PriceEconomy, PriceBusiness, PriceFirst} = this.props
     return(
           
       
@@ -39,11 +40,15 @@ export default class Card extends Component{
             <h3>To : {To}</h3>
             <h3>Flight Date : {Date}</h3>
             <h3>Flight Number :{Flightnum}</h3>
+            <h2>Departure : {departuret}</h2>
+            <h2>Arrival : {arrivalt}</h2>
             <h3> Economy class seats available : {ecoseats}</h3>
             <h3>Business class seats available : {bisseats}</h3>
             <h3>  First class seats available : {firstseats}</h3>
-            <h2>Departure : {departuret}</h2>
-            <h2>Arrival : {arrivalt}</h2>
+            <h2>Economy Price : {PriceEconomy}</h2>
+            <h2>Business Price : {PriceBusiness}</h2>
+            <h2>First Price : {PriceFirst}</h2>
+           
             
             <a class=" f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue " href ={`/admin/update/${ObjectId}`} >Update</a>        
             <a class=" f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue " onClick={(event) =>this.buttonClick(ObjectId,event)}>Delete</a>
