@@ -39,7 +39,10 @@ App.post('/addflight', async (req, res) => {
     NumberOfFirstSeats: reqbody.NumberOfFirstSeats,
     ArrivalTime: reqbody.ArrivalTime,
     DepartureTime: reqbody.DepartureTime,
-    Seats: []
+    Seats: [],
+    PriceEconomy: reqbody.PriceEconomy,
+    PriceBusiness: reqbody.PriceBusiness,
+    PriceFirst: reqbody.PriceFirst,
   });
 
 
