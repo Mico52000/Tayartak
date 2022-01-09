@@ -4,6 +4,13 @@ import 'tachyons';
 
 
 export default class SearchBox extends Component{
+
+  handleSignOut(e){
+    e.preventDefault();
+    sessionStorage.removeItem('accessToken');
+    sessionStorage.removeItem('loggedUser');
+    window.location.href = '/signin'
+  }
     render(){
         
         return(
@@ -16,7 +23,7 @@ export default class SearchBox extends Component{
 
               <a class="link dim white dib mr3" href="/user/reservations" title="reservations">My Reservations</a>
               <a class="link dim white dib mr3" href="/user/edit" title="Edit">View Profile</a>
-              <a class="right link dim white dib mr3" href="/signin" title="Search">Sign Out</a>
+              <a class="right link dim white dib mr3" onClick={this.handleSignOut} title="Search">Sign Out</a>
              
             </nav>
           </header>
