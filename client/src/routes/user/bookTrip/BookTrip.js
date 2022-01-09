@@ -14,6 +14,7 @@ import TripForm from './TripForm.js';
 import DepartureFlightSelect from './SelectDepFlight.js';
 import ReturnFlightSelect from './SelectRetFlight.js';
 import Review from './Review.js';
+import './BookTrip.css';
 
 const steps = ['Trip Details', 'Departure Flight', 'Return Flight', 'Review'];
 
@@ -45,6 +46,7 @@ export default class BookTrip extends React.Component {
 
       isToggledDep: [false],
       isToggledRet: [false],
+      
       SelectedFlightDep: null,
       SelectedFlightRet: null,
 
@@ -103,7 +105,11 @@ export default class BookTrip extends React.Component {
     Axios.get("http://localhost:8000/searchTrip",{
       params: {from: this.state.from, to: this.state.to, departureDate:this.state.departureDate,
       numberOfPassengers:this.state.numberOfPassengers, cabin:this.state.cabin}
-    }).then((resp)=>{this.setState({departureFlights : resp.data})}).catch((err)=> alert(err));
+    },
+    {
+      headers: {"Authorization": sessionStorage.getItem("accessToken")}
+    }
+    ).then((resp)=>{this.setState({departureFlights : resp.data})}).catch((err)=> alert(err));
    
   }
 
@@ -146,9 +152,10 @@ export default class BookTrip extends React.Component {
     }
     this.setState({ activeStep: this.state.activeStep + 1 })
   };
+
   handleBack() {
     if(this.state.activeStep===1){
-      this.setState({
+      this.setState({ 
         isToggledDep: [false],
         isToggledRet: [false],
         SelectedFlightDep: null,
@@ -210,9 +217,13 @@ export default class BookTrip extends React.Component {
       <ThemeProvider theme={theme}>
         <CssBaseline />
 
+        <div className='background' >
+        </div>
 
         <Container component="main" maxWidth="sm" sx={{ mb: 4, minWidth: 700 }}>
-          <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
+          <Paper variant="outlined" sx={{
+             bgcolor: "rgba(255,255,255,0.6)",
+             my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
 
             <Typography component="h1" variant="h4" align="center">
               Book Your Flight!
@@ -241,6 +252,7 @@ export default class BookTrip extends React.Component {
               ) : (
                 <React.Fragment>
                   {this.getStepContent(this.state.activeStep)}
+
                   <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                     {this.state.activeStep !== 0 && (
                       <Button onClick={this.handleBack} sx={{ mt: 3, ml: 1 }}>

@@ -36,6 +36,11 @@ export default class AddFlight extends Component {
         }).catch((err) => alert(err));
       }
 
+      
+      componentDidMount(){
+
+      }
+
     render() {
         return (
             <div className="AddFlight">

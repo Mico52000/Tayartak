@@ -15,7 +15,7 @@ export default class SearchBox extends Component{
               <a class="link dim white dib mr3" href="/admin/search" title="Search">Search</a>
               <a class="link dim white dib mr3" href="/admin/addflight" title="Search">Add Flight</a>
               <a class="link dim white dib mr3" href="/admin/displayall" title="Search">Display All</a>
-              <a class="right link dim white dib mr3" href="/" title="Search">Sign Out</a>
+              <a class="right link dim white dib mr3" href="/signin" title="Search">Sign Out</a>
             </nav>
           </header>
           </div>
