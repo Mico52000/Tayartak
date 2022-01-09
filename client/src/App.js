@@ -5,7 +5,6 @@ import 'tachyons';
 import AdminNavBar from './Components/admin/NavBar.js'
 import UserNavBar from './Components/user/NavBar.js'
 
-import Home from './routes/public/Home.js'
 import UserEdit from './routes/user/Edit.js'
 import Usereditdata from './routes/user/editdata.js'
 import AdminHome from './routes/admin/Home.js'
@@ -19,6 +18,11 @@ import UserBookFlight from './routes/user/bookTrip/BookTrip.js'
 import FlightSeatPickerParent from './routes/user/FlightSeatPickerParent.js';
 import Reservations from './routes/user/Reservations.js';
 import Itinerary from './routes/user/Itinerary.js';
+
+import SignIn from './routes/public/SignIn.js'
+import SignUp from './routes/public/SignUp.js'
+import GuestBookFlight from './routes/guest/bookTrip/BookTrip.js'
+
 export default class App extends Component {
 
 
@@ -69,9 +73,20 @@ export default class App extends Component {
       <div className="App">
 
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="admin/*" element={<AdminRoutes />} />
-          <Route path="user/*" element={<UserRoutes />} />
+          <Route path="/" element={<SignIn />} />
+          <Route path="Signin" element = {<SignIn />} />
+          <Route path="signup" element = {<SignUp />} />
+          <Route path="/guest/bookflight" element = {<GuestBookFlight />} />
+          
+          {sessionStorage.getItem("loggedUser")!==null? JSON.parse(sessionStorage.getItem("loggedUser")).Type==="admin"?(
+            <Route path="admin/*" element={<AdminRoutes />} />
+          ):(""):( "")
+          }
+          {sessionStorage.getItem("loggedUser")!==null? JSON.parse(sessionStorage.getItem("loggedUser")).Type==="user"?(
+             <Route path="user/*" element={<UserRoutes />} />
+          ):(""):("")
+          }
+
         </Routes>
 
       </div>

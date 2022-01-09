@@ -1,0 +1,37 @@
+POST http://localhost:8000/register
+Content-Type: application/json
+
+{
+    "firstName": "Mohamed",
+    "lastName": "Alaaser",
+    "email": "mohamed.s.alaaser@icloud.com",
+    "username": "mohamed.alaaser5",
+    "password": "Qawsed123",
+    "address": "berlin",
+    "phoneNumber": "+201000747901",
+    "passportNumber": "123456789"
+}
+
+###
+
+POST http://localhost:8000/login
+Content-Type: application/json
+
+{
+    "username": "mohamed.alaaser",
+    "password": "Qawsed123"
+   
+}
+###
+
+POST http://localhost:8000/emailExist
+Content-Type: application/json
+
+{
+   "email": "mohamed.s.alaaser@icloud1.com"
+}
+
+###
+
+GET http://localhost:8000/posts
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MWQ5ODE5ODM3NjFlZmQyNjQ4NTg1YmIiLCJVc2VybmFtZSI6Im1vaGFtZWQuYWxhYXNlciIsImlhdCI6MTY0MTY2NTIxOX0.TwtQB5Yy7ckBI92psnWnXXGfx500ksNHKs4fFJAlkqM
