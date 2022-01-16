@@ -29,7 +29,6 @@ export default class SignUp extends React.Component {
       username: "",
       password: "",
       submitError: "",
-
     }
     this.render = this.render.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -96,6 +95,7 @@ export default class SignUp extends React.Component {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
+            borderRadius: '14px'
           }}>
             <Box
               sx={{
@@ -167,12 +167,15 @@ export default class SignUp extends React.Component {
                 </Button>
 
                 <Grid container>
-                  <Grid item xs>
-                    <Link href="#" variant="body2">
+               
+                   
+               
+
+                  <Grid item>
+                  <Link href="#" variant="body2">
                       Forgot password?
                     </Link>
-                  </Grid>
-                  <Grid item>
+                    <br/>
                     <Link href="/signup" variant="body2">
                       {"Don't have an account? Sign Up"}
                     </Link>

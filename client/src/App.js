@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import 'tachyons';
 
 import AdminNavBar from './Components/admin/NavBar.js'
@@ -22,6 +22,7 @@ import Itinerary from './routes/user/Itinerary.js';
 import SignIn from './routes/public/SignIn.js'
 import SignUp from './routes/public/SignUp.js'
 import GuestBookFlight from './routes/guest/bookTrip/BookTrip.js'
+import ErrorPage from './routes/public/ErrorPage.js'
 
 export default class App extends Component {
 
@@ -30,11 +31,12 @@ export default class App extends Component {
 
 
     // here add routes with admin navbar
-    function AdminRoutes(){
+    function AdminRoutes() {
       return (
         <div>
           <AdminNavBar />
           <Routes>
+            <Route path="/" element={<AdminHome />} />
             <Route path="/home" element={<AdminHome />} />
             <Route path="/search" element={<AdminSearch />} />
             <Route path="/addflight" element={<AdminAddFlight />} />
@@ -48,19 +50,20 @@ export default class App extends Component {
 
 
     // here add routes with user navbar
-    function UserRoutes(){
+    function UserRoutes() {
       return (
         <div>
           <UserNavBar />
           <Routes>
+            <Route path="/" element={<UserHome />} />
             <Route path="/home" element={<UserHome />} />
             <Route path="/bookflight" element={<UserBookFlight />} />
-            <Route path="/pickseats/:booking" element={<FlightSeatPickerParent/>} />
-            <Route path="/edit" element={<UserEdit/>}/>
-            <Route path="/editdata/:username/:firstname/:lastname/:email/:passport" element={<Usereditdata/>}/>
-            <Route path="/reservations" element ={<Reservations/>} />
-            <Route path="/Popup/:id" element={<Popup/>}/>
-            <Route path="/viewticket/:BookingId" element={<Itinerary/>}/>
+            <Route path="/pickseats/:booking" element={<FlightSeatPickerParent />} />
+            <Route path="/edit" element={<UserEdit />} />
+            <Route path="/editdata/:username/:firstname/:lastname/:email/:passport" element={<Usereditdata />} />
+            <Route path="/reservations" element={<Reservations />} />
+            <Route path="/Popup/:id" element={<Popup />} />
+            <Route path="/viewticket/:BookingId" element={<Itinerary />} />
           </Routes>
 
         </div>
@@ -73,19 +76,41 @@ export default class App extends Component {
       <div className="App">
 
         <Routes>
-          <Route path="/" element={<SignIn />} />
-          <Route path="Signin" element = {<SignIn />} />
-          <Route path="signup" element = {<SignUp />} />
-          <Route path="/guest/bookflight" element = {<GuestBookFlight />} />
+
+          <Route path="/" element={
+            sessionStorage.getItem("loggedUser") == null ? (
+              <SignIn />
+            ) : JSON.parse(sessionStorage.getItem("loggedUser")).Type === "admin" ? (
+              <Navigate to="/admin/home" />
+            ) : (
+              <Navigate to="/user/home" />
+            )
+          } />
+
+
+          <Route path="Signin" element={
+            sessionStorage.getItem("loggedUser") == null ?(<SignIn /> ):(<Navigate to="/" />)
+          } />
+           <Route path="signup" element={
+            sessionStorage.getItem("loggedUser") == null ?(<SignUp /> ):(<Navigate to="/" />)
+          } />
+
+
+          <Route path="/guest/bookflight" element={<GuestBookFlight />} />
+
+
+          <Route path="admin/*" element={
+            sessionStorage.getItem("loggedUser") !== null ? JSON.parse(sessionStorage.getItem("loggedUser")).Type === "admin" ?
+            (<AdminRoutes />):(<ErrorPage/>):(<ErrorPage/>)
+
+          } />
           
-          {sessionStorage.getItem("loggedUser")!==null? JSON.parse(sessionStorage.getItem("loggedUser")).Type==="admin"?(
-            <Route path="admin/*" element={<AdminRoutes />} />
-          ):(""):( "")
-          }
-          {sessionStorage.getItem("loggedUser")!==null? JSON.parse(sessionStorage.getItem("loggedUser")).Type==="user"?(
-             <Route path="user/*" element={<UserRoutes />} />
-          ):(""):("")
-          }
+          <Route path="user/*" element={
+            sessionStorage.getItem("loggedUser") !== null ? JSON.parse(sessionStorage.getItem("loggedUser")).Type === "user" ?
+            (<UserRoutes />):(<ErrorPage/>):(<ErrorPage/>)
+
+          } />
+
 
         </Routes>
 

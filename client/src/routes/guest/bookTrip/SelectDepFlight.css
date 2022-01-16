@@ -1,9 +1,5 @@
 
 .cardList{
-
-    /* width: 700px; */
-    /* margin-left: 32px; */
-
     display: flex;
     justify-content: flex-start;
     flex-direction: row;

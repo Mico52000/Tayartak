@@ -101,9 +101,6 @@ export default class Checkout extends React.Component {
                 onChange={this.props.handleCabinChange}
                 label="Class"
               >
-                <MenuItem value="null">
-                  <em>None</em>
-                </MenuItem>
                 <MenuItem value={"economy"}>Economy class</MenuItem>
                 <MenuItem value={"business"}>Business class</MenuItem>
                 <MenuItem value={"first"}>First class</MenuItem>

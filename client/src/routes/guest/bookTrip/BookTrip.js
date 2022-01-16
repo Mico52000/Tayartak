@@ -51,7 +51,7 @@ export default class BookTrip extends React.Component {
       SelectedFlightDep: null,
       SelectedFlightRet: null,
 
-
+      ErrorText: "",
 
     }
 
@@ -128,12 +128,28 @@ export default class BookTrip extends React.Component {
   handleNext(e) {
     e.preventDefault();
     if(this.state.activeStep===0){
+      if(this.state.from.length===0||this.state.to.length===0||this.state.departureDate.length===0||
+        this.state.returnDate.length===0||this.state.numberOfPassengers.length===0||this.state.cabin.length==0){
+          this.setState({ErrorText:"Please fill all fields"})
+          return;
+        }
      this.searchTripDep();
     }else if(this.state.activeStep===1){
+      if(this.state.isToggledDep.indexOf(true)===-1){
+        this.setState({ErrorText:"Please select a flight"})
+        return;
+      }
       this.searchTripRet();
-    }else if(this.state.activeStep==3){
+    }else if(this.state.activeStep === 2){
+      if(this.state.isToggledRet.indexOf(true)===-1){
+        this.setState({ErrorText:"Please select a flight"})
+        return;
+      }
+    }
+    else if(this.state.activeStep==3){
       window.location.href = '/signin'
     }
+    this.setState({ErrorText:""})
     this.setState({ activeStep: this.state.activeStep + 1 })
   };
 
@@ -145,8 +161,8 @@ export default class BookTrip extends React.Component {
         SelectedFlightDep: null,
         SelectedFlightRet: null,
       })
-     
     }
+    this.setState({ ErrorText: "" })
     this.setState({ activeStep: this.state.activeStep - 1 })
   };
 
@@ -208,7 +224,13 @@ export default class BookTrip extends React.Component {
         <Container component="main" maxWidth="sm" sx={{ mb: 4, minWidth: 700 }}>
           <Paper variant="outlined" sx={{
              bgcolor: "rgba(255,255,255,0.6)",
-             my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
+             paddingX: 10,
+             paddingY: 10,
+             marginBottom: 7,
+             marginTop: 15,
+             borderRadius: '14px'
+            }}
+             >
 
             <Typography component="h1" variant="h4" align="center">
               Book Your Flight!
@@ -225,6 +247,11 @@ export default class BookTrip extends React.Component {
             
                 <React.Fragment>
                   {this.getStepContent(this.state.activeStep)}
+
+                  <br/>
+                  <Typography component="body2" variant="body2" color="red" >
+                      {this.state.ErrorText}
+                    </Typography>
 
                   <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                     {this.state.activeStep !== 0 && (
