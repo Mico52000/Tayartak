@@ -1,8 +1,12 @@
-.AddFlight {
-    display: flex;
-    justify-content: flex-start;
-    flex-direction: column;
-    align-items: center;
-    height : 100vh;
-    
-  }
+
+
+  .background {
+    background-image: url("https://wallpaperaccess.com/full/3604547.jpg");
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-size: cover;
+    z-index: -1;
+}

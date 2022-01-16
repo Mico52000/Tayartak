@@ -1,77 +1,71 @@
 import React, { Component } from 'react';
 
 import './Card.css';
-
 import Axios from 'axios';
+import ToggleButton from '@mui/material/ToggleButton';
+import Box from '@mui/material/Box';
 
-export default class Card extends Component{
-    constructor(){
-    super();
-    this.state={
+export default class Card extends Component {
+    constructor() {
+        super();
+        this.buttonClick = this.buttonClick.bind(this);
+    }
 
-    }
-    this.buttonClick= this.buttonClick.bind(this);
-    this.render= this.render.bind(this);
-    }
-    
-    buttonClick(Id){
-        // Axios.post("http://localhost:8000/insert",this.state).then(()=>alert('success')).catch((err) => alert(err));
-        
+    buttonClick(Id) {
         var result = window.confirm("Are you sure you want to delete this flight?");
-         if (result) {
-        Axios.delete(`http://localhost:8000/delete/${Id}`
-        );
-        window.location.reload(false);
-        // console.log(Id);
-    
-      }
-    }
-       
-    render()
-    {
-        const {ObjectId,From,To,Date,Flightnum,ecoseats,bisseats,firstseats,arrivalt,departuret,
-            PriceEconomy, PriceBusiness, PriceFirst} = this.props
-    return(
-          
-      
-        <div className=" cardbg tc bg-blue  dib br3 ma2 pa3  shadow-5 w5 ">
-            
-            <h3>From : {From}</h3>
-            <h3>To : {To}</h3>
-            <h3>Flight Date : {Date}</h3>
-            <h3>Flight Number :{Flightnum}</h3>
-            <h2>Departure : {departuret}</h2>
-            <h2>Arrival : {arrivalt}</h2>
-            <h3> Economy class seats available : {ecoseats}</h3>
-            <h3>Business class seats available : {bisseats}</h3>
-            <h3>  First class seats available : {firstseats}</h3>
-            <h2>Economy Price : {PriceEconomy}</h2>
-            <h2>Business Price : {PriceBusiness}</h2>
-            <h2>First Price : {PriceFirst}</h2>
-           
-            
-            <a class=" f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue " href ={`/admin/update/${ObjectId}`} >Update</a>        
-            <a class=" f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue " onClick={(event) =>this.buttonClick(ObjectId,event)}>Delete</a>
-            
-          {/* //  <a class ="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" onClick ={() =>{var result = window.confirm("Want to delete?"); */}
-{/* if (result) {
-    //Logic to delete the item
-    // console.log("hello");
-    // console.log(From)
-    // console.log({ObjectId});
-     var stringId = ObjectId.toString();
-    // console.log(stringId);
-    // console.log(typeof stringId);
-    this.deleteFlight({stringId}
-        )}
-    }
-}> Delete  </a>  */}
+        if (result) {
+            Axios.delete(`http://localhost:8000/delete/${Id}`
+            );
+            window.location.reload(false);
 
+
+        }
+    }
+
+    render() {
+        const { From, To, Date, Flightnum, ecoseats, bisseats, firstseats, arrivalt, departuret,
+            ObjectId, PriceEconomy, PriceBusiness, PriceFirst } = this.props;
+
+        let btn_class = "cardbg tc bg-blue  dib br3 ma2 pa2  shadow-5 w5";
+
+        return (
+
+            < ToggleButton value="" sx={{ maxWidth: 250, minWidth: 250 }}>
+                <div className={btn_class}>
+
+                    <h6>
+                        FROM : {From}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TO : {To}
+                        <br />
+                        FLIGHT DATE : {Date}
+                        <br />
+                        FLIGHT NUMBER : {Flightnum}
+                        <br />
+                        DEPARTURE TIME : {departuret}
+                        <br />
+                        ARRIVAL TIME : {arrivalt}
+                        <br />
+                        ECONOMY SEATS AVAILABLE : {ecoseats}
+                        <br />
+                        ECONOMY PRICE : {PriceEconomy}
+                        <br />
+                        BUSINESS SEATS AVAILABLE : {bisseats}
+                        <br />
+                        BUSINESS PRICE : {PriceBusiness}
+                        <br />
+                        FIRST SEATS AVAILABLE : {firstseats}
+                        <br />
+                        FIRST PRICE : {PriceFirst}
+                    </h6>
+
+                    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                    <a class=" p grow no-underline br-pill ph2 pv2 mb2 dib white bg-dark-blue " href ={`/admin/update/${ObjectId}`} >Update</a>        
+                    <a class=" p grow no-underline br-pill ph2 pv2 mb2 dib white bg-dark-blue " onClick={(event) =>this.buttonClick(ObjectId,event)}>Delete</a>
             
-              
-            
-        </div>
-       
-    )
+                </Box>
+                </div>
+
+            </ToggleButton>
+
+        )
     }
 }

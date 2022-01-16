@@ -1,8 +1,7 @@
 import 'tachyons';
-import './Home.css';
 import {Component} from  'react';
 
-export default class Home extends Component {
+export default class ErrorPage extends Component {
     constructor(){
       super();
       this.state = {
@@ -12,8 +11,9 @@ export default class Home extends Component {
   
     render(){
       return (
-        <div className="Home">
-            <h2>Welcome to the admin's homepage!</h2>
+        <div >
+          
+            <h2>You are trying to access a page that you are not allowed to access</h2>
             
           
     

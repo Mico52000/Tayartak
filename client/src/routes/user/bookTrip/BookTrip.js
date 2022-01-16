@@ -46,10 +46,11 @@ export default class BookTrip extends React.Component {
 
       isToggledDep: [false],
       isToggledRet: [false],
-      
+
       SelectedFlightDep: null,
       SelectedFlightRet: null,
 
+      ErrorText: "",
 
 
     }
@@ -87,82 +88,102 @@ export default class BookTrip extends React.Component {
   };
   //
   //selecting flights
-  handleSelectDepChange(flight){
-    this.setState({SelectedFlightDep: flight})
+  handleSelectDepChange(flight) {
+    this.setState({ SelectedFlightDep: flight })
   }
-  handleSelectRetChange(flight){
-    this.setState({SelectedFlightRet: flight})
+  handleSelectRetChange(flight) {
+    this.setState({ SelectedFlightRet: flight })
   }
-  handleIsToggledDepChange(array){
-    this.setState({isToggledDep:array})
+  handleIsToggledDepChange(array) {
+    this.setState({ isToggledDep: array })
   }
-  handleIsToggledRetChange(array){
-    this.setState({isToggledRet:array})
+  handleIsToggledRetChange(array) {
+    this.setState({ isToggledRet: array })
   }
 
-  searchTripDep(){
+  searchTripDep() {
 
-    Axios.get("http://localhost:8000/searchTrip",{
-      params: {from: this.state.from, to: this.state.to, departureDate:this.state.departureDate,
-      numberOfPassengers:this.state.numberOfPassengers, cabin:this.state.cabin}
+    Axios.get("http://localhost:8000/searchTrip", {
+      params: {
+        from: this.state.from, to: this.state.to, departureDate: this.state.departureDate,
+        numberOfPassengers: this.state.numberOfPassengers, cabin: this.state.cabin
+      }
     },
-    {
-      headers: {"Authorization": sessionStorage.getItem("accessToken")}
-    }
-    ).then((resp)=>{this.setState({departureFlights : resp.data})}).catch((err)=> alert(err));
-   
-  }
-
-  searchTripRet(){
-
-    Axios.get("http://localhost:8000/searchTrip",{
-      params: {from: this.state.to, to: this.state.from, departureDate:this.state.returnDate,
-      numberOfPassengers:this.state.numberOfPassengers, cabin:this.state.cabin}
-    }).then((resp)=>{this.setState({returnFlights : resp.data})}).catch((err)=> alert(err));
-    
+      {
+        headers: { "Authorization": sessionStorage.getItem("accessToken") }
+      }
+    ).then((resp) => { this.setState({ departureFlights: resp.data }) }).catch((err) => alert(err));
 
   }
 
-  confirmReservation(){
-    Axios.post("http://localhost:8000/confirmReservation",{
-      
-        userId:"61bff21874e339983be37a00",
-        selectedFlightIDDep: this.state.SelectedFlightDep._id,
-        selectedFlightIDRet: this.state.SelectedFlightRet._id,
-        numberOfPassengers: this.state.numberOfPassengers,
-        cabin: this.state.cabin,
-        totalPrice:this.state.numberOfPassengers*(this.state.cabin=== "economy"? this.state.SelectedFlightDep.PriceEconomy +
-        this.state.SelectedFlightRet.PriceEconomy: this.state.cabin==="business"? this.state.SelectedFlightDep.PriceBusiness +
-        this.state.SelectedFlightRet.PriceBusiness: this.state.SelectedFlightDep.PriceFirst +
-        this.state.SelectedFlightRet.PriceFirst)
-      
-    }).then((resp)=>{console.log(resp.data)});
-    
+  searchTripRet() {
+
+    Axios.get("http://localhost:8000/searchTrip", {
+      params: {
+        from: this.state.to, to: this.state.from, departureDate: this.state.returnDate,
+        numberOfPassengers: this.state.numberOfPassengers, cabin: this.state.cabin
+      }
+    }).then((resp) => { this.setState({ returnFlights: resp.data }) }).catch((err) => alert(err));
+
+
+  }
+
+  confirmReservation() {
+    Axios.post("http://localhost:8000/confirmReservation", {
+
+      userId: "61bff21874e339983be37a00",
+      selectedFlightIDDep: this.state.SelectedFlightDep._id,
+      selectedFlightIDRet: this.state.SelectedFlightRet._id,
+      numberOfPassengers: this.state.numberOfPassengers,
+      cabin: this.state.cabin,
+      totalPrice: this.state.numberOfPassengers * (this.state.cabin === "economy" ? this.state.SelectedFlightDep.PriceEconomy +
+        this.state.SelectedFlightRet.PriceEconomy : this.state.cabin === "business" ? this.state.SelectedFlightDep.PriceBusiness +
+          this.state.SelectedFlightRet.PriceBusiness : this.state.SelectedFlightDep.PriceFirst +
+      this.state.SelectedFlightRet.PriceFirst)
+
+    }).then((resp) => { console.log(resp.data) });
+
   }
 
 
   handleNext(e) {
     e.preventDefault();
-    if(this.state.activeStep===0){
-     this.searchTripDep();
-    }else if(this.state.activeStep===1){
+    if (this.state.activeStep === 0) {
+      if(this.state.from.length===0||this.state.to.length===0||this.state.departureDate.length===0||
+        this.state.returnDate.length===0||this.state.numberOfPassengers.length===0||this.state.cabin.length==0){
+          this.setState({ErrorText:"Please fill all fields"})
+          return;
+        }
+      this.searchTripDep();
+    } else if (this.state.activeStep === 1) {
+      if(this.state.isToggledDep.indexOf(true)===-1){
+        this.setState({ErrorText:"Please select a flight"})
+        return;
+      }
       this.searchTripRet();
-    }else if(this.state.activeStep==3){
+    }else if(this.state.activeStep === 2){
+      if(this.state.isToggledRet.indexOf(true)===-1){
+        this.setState({ErrorText:"Please select a flight"})
+        return;
+      }
+    }
+     else if (this.state.activeStep == 3) {
       this.confirmReservation();
     }
+    this.setState({ErrorText:""})
     this.setState({ activeStep: this.state.activeStep + 1 })
   };
 
   handleBack() {
-    if(this.state.activeStep===1){
-      this.setState({ 
+    if (this.state.activeStep === 1) {
+      this.setState({
         isToggledDep: [false],
         isToggledRet: [false],
         SelectedFlightDep: null,
         SelectedFlightRet: null,
       })
-     
     }
+    this.setState({ ErrorText: "" })
     this.setState({ activeStep: this.state.activeStep - 1 })
   };
 
@@ -178,34 +199,34 @@ export default class BookTrip extends React.Component {
           cabin={this.state.cabin} handleCabinChange={this.handleCabinChange.bind(this)} />;
       case 1:
         return <DepartureFlightSelect
-        departureFlights ={this.state.departureFlights}
-        isToggledDep={this.state.isToggledDep}
-        handleIsToggledDepChange={this.handleIsToggledDepChange.bind(this)}
-        handleSelectDepChange={this.handleSelectDepChange.bind(this)}
-        SelectedFlightDep= {this.state.SelectedFlightDep}
-        departureDate= {this.state.departureDate}
-        from = {this.state.from}
-        to = {this.state.to}
-        cabin= {this.state.cabin}
-         />;
+          departureFlights={this.state.departureFlights}
+          isToggledDep={this.state.isToggledDep}
+          handleIsToggledDepChange={this.handleIsToggledDepChange.bind(this)}
+          handleSelectDepChange={this.handleSelectDepChange.bind(this)}
+          SelectedFlightDep={this.state.SelectedFlightDep}
+          departureDate={this.state.departureDate}
+          from={this.state.from}
+          to={this.state.to}
+          cabin={this.state.cabin}
+        />;
       case 2:
         return <ReturnFlightSelect
-        returnFlights ={this.state.returnFlights}
-        isToggledRet={this.state.isToggledRet}
-        handleIsToggledRetChange={this.handleIsToggledRetChange.bind(this)}
-        handleSelectRetChange={this.handleSelectRetChange.bind(this)}
-        SelectedFlightRet= {this.state.SelectedFlightRet}
-        returnDate= {this.state.returnDate}
-        from = {this.state.to}
-        to = {this.state.from}
-        cabin= {this.state.cabin}
+          returnFlights={this.state.returnFlights}
+          isToggledRet={this.state.isToggledRet}
+          handleIsToggledRetChange={this.handleIsToggledRetChange.bind(this)}
+          handleSelectRetChange={this.handleSelectRetChange.bind(this)}
+          SelectedFlightRet={this.state.SelectedFlightRet}
+          returnDate={this.state.returnDate}
+          from={this.state.to}
+          to={this.state.from}
+          cabin={this.state.cabin}
         />;
       case 3:
-        return <Review 
-        SelectedFlightDep= {this.state.SelectedFlightDep}
-        SelectedFlightRet= {this.state.SelectedFlightRet}
-        cabin= {this.state.cabin}
-        numberOfPassengers= {this.state.numberOfPassengers}
+        return <Review
+          SelectedFlightDep={this.state.SelectedFlightDep}
+          SelectedFlightRet={this.state.SelectedFlightRet}
+          cabin={this.state.cabin}
+          numberOfPassengers={this.state.numberOfPassengers}
         />;
       default:
         throw new Error('Unknown step');
@@ -220,14 +241,21 @@ export default class BookTrip extends React.Component {
         <div className='background' >
         </div>
 
-        <Container component="main" maxWidth="sm" sx={{ mb: 4, minWidth: 700 }}>
+        <Container component="main" maxWidth="sm" sx={{ mt: 10, mb: 4, minWidth: 800, }}>
           <Paper variant="outlined" sx={{
-             bgcolor: "rgba(255,255,255,0.6)",
-             my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
+            bgcolor: "rgba(255,255,255,0.6)",
+            paddingX: 10,
+            paddingY: 10,
+            marginBottom: 7,
+            marginTop: 20,
+            borderRadius: '14px'
+            // my: { mt: 10, xs: 3, md: 6 }, p: { mt:10, xs: 2, md: 3 } 
+          }}>
 
             <Typography component="h1" variant="h4" align="center">
               Book Your Flight!
             </Typography>
+            <br />
 
             <Stepper activeStep={this.state.activeStep} sx={{ pt: 3, pb: 5 }}>
               {steps.map((label) => (
@@ -246,12 +274,17 @@ export default class BookTrip extends React.Component {
                   <Typography variant="subtitle1">
                     Your trip has been booked.
                   </Typography>
-                  <a href="/user/reservations" title="reservations">Click here to view 
+                  <a href="/user/reservations" title="reservations">Click here to view
                     your reservations and pick your seats</a>
                 </React.Fragment>
               ) : (
                 <React.Fragment>
                   {this.getStepContent(this.state.activeStep)}
+
+                  <br/>
+                  <Typography component="body2" variant="body2" color="red" >
+                      {this.state.ErrorText}
+                    </Typography>
 
                   <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                     {this.state.activeStep !== 0 && (
@@ -260,6 +293,7 @@ export default class BookTrip extends React.Component {
                       </Button>
                     )}
 
+                    
                     <Button
                       variant="contained"
                       onClick={this.handleNext}
