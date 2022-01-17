@@ -1,0 +1,13 @@
+
+.cardList{
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: row;
+    overflow-x: auto;
+    height: 210px;
+
+  }
+
+  .center{
+    text-align: center;
+  }

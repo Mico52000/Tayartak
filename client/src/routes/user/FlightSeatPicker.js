@@ -16,7 +16,8 @@ export default class FlightSeatPicker extends Component {
     state = {
         loading: false,
         MaxSeats:3,
-        ReservationCabin:"",
+        CabinDep: "",
+        CabinRet: "",
         DepFlightId: "",
         RetFlightId:"",
         DatabaserowsDep:[],
@@ -35,7 +36,7 @@ export default class FlightSeatPicker extends Component {
             params: {resid:bookingNumber}
           }).then((resp)=>{this.setState({MaxSeats: resp.data.NumSeats,DepFlightId : resp.data.DepFlight,RetFlightId:resp.data.RetFlight});
            this.generateRows(resp.data.DepFlight,resp.data.RetFlight);
-           this.setState({ReservationCabin : resp.data.Cabin});
+           this.setState({CabinDep : resp.data.CabinDep, CabinRet: resp.data.CabinRet});
            if(resp.data.SeatsDep.length>0)
               this.setState({DisablebuttonA:true});
             if(resp.data.SeatsRet.length>0)
@@ -64,8 +65,8 @@ export default class FlightSeatPicker extends Component {
               id:element.id,
               number: element.number,
               isReserved: element.isReserved,
-              isWrongCabin:(element.Cabin.localeCompare(this.state.ReservationCabin)==0)? false : true,
-              tooltip: (element.Cabin.localeCompare(this.state.ReservationCabin)==0 || (element.isReserved ==true))? "": `You did not reserve the Cabin  : ${element.Cabin}, you can only pick ${this.state.ReservationCabin} seats `,
+              isWrongCabin:(element.Cabin.localeCompare(this.state.CabinDep)==0)? false : true,
+              tooltip: (element.Cabin.localeCompare(this.state.CabinDep)==0 || (element.isReserved ==true))? "": `You did not reserve the Cabin  : ${element.Cabin}, you can only pick ${this.state.CabinDep} seats `,
               Cabin:element.Cabin,
 
 
@@ -100,8 +101,8 @@ export default class FlightSeatPicker extends Component {
               id:element.id,
               number: element.number,
               isReserved: element.isReserved,
-              isWrongCabin:(element.Cabin.localeCompare(this.state.ReservationCabin)==0)? false : true,
-              tooltip: (element.Cabin.localeCompare(this.state.ReservationCabin)==0 || (element.isReserved ==true))  ? "": `You did not reserve the Cabin  : ${element.Cabin}, you can only pick ${this.state.ReservationCabin} seats `,
+              isWrongCabin:(element.Cabin.localeCompare(this.state.CabinRet)==0)? false : true,
+              tooltip: (element.Cabin.localeCompare(this.state.CabinRet)==0 || (element.isReserved ==true))  ? "": `You did not reserve the Cabin  : ${element.Cabin}, you can only pick ${this.state.CabinRet} seats `,
               Cabin:element.Cabin,
 
 
@@ -142,7 +143,6 @@ export default class FlightSeatPicker extends Component {
             console.log(this.state.DepSeats);
           }
           await new Promise(resolve => setTimeout(resolve, 750))
-          console.log(`Added seat ${number}, row ${row}, id ${id}`)
           const newTooltip = ``
           addCb(row, number, id, newTooltip);
           this.setState({DepSeats :  this.state.DepSeats.concat([id])});

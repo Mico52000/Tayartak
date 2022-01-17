@@ -25,6 +25,7 @@ export default class res extends Component{
         retDtime :"",
         retAtime :"",
         retSeats :"",
+        TotalPrice :0
         
     }
     
@@ -60,7 +61,7 @@ export default class res extends Component{
        
     render()
     {
-        const {BookingId,departureId,returnId,Cab,seatsDep,seatsRet} = this.props;
+        const {BookingId,departureId,returnId,Cab,seatsDep,seatsRet,TotalPrice} = this.props;
         
 
                 
@@ -72,6 +73,7 @@ export default class res extends Component{
         <div className=" cardbg tc bg-blue  dib br3 ma2 pa3  shadow-5 w5 ">
             <div class ="book">
             <h2>BookingId : {BookingId}</h2>
+            <h1>Total Price :{TotalPrice}</h1>
             </div>
             <div class="departure">
             <h1> Departure</h1>

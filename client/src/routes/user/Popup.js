@@ -22,9 +22,9 @@ function Popup(){
     return(flag)?(
         <div className="modalBackground">
             <div className="modalContainer">
-                <div className="titleCloseBtn">
+                {/* <div className="titleCloseBtn">
                 <button>X</button>
-                </div>
+                </div> */}
                 <div className="title">
                     <h1>Are you sure you want to Cancel your reservation?</h1>
                 </div>

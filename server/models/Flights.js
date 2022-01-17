@@ -32,6 +32,15 @@ const FlightSchema = new mongoose.Schema({
 
         type : String
     },
+
+    DepartureTime :{
+        type : String
+    },
+    
+    ArrivalTime :{
+         type :String
+    },
+
     NumberOfEconomySeats :{
 
         type : Number
@@ -46,14 +55,18 @@ const FlightSchema = new mongoose.Schema({
 
          type : Number
     },
-    ArrivalTime :{
-         type :String
-    },
-    DepartureTime :{
-        type : String
-    },
-    
+   
     Seats : [[Seat]],
+
+    PriceEconomy: {
+        type: Number
+    },
+    PriceBusiness: {
+        type: Number
+    },
+    PriceFirst: {
+        type: Number
+    },
    
 });
 									

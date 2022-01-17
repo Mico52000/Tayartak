@@ -22,10 +22,10 @@ export default class Seat extends Component {
       isWrongCabin,
     } = this.props;
     var CabinClass=""
-    if(Cabin.localeCompare("BusinessClass")==0){
+    if(Cabin.localeCompare("business")==0){
       CabinClass = "seat--business"
     }
-    else if(Cabin.localeCompare("FirstClass")==0){
+    else if(Cabin.localeCompare("first")==0){
       CabinClass = "seat--firstclass"
     }
     else{

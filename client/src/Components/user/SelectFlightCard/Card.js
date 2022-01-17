@@ -26,13 +26,13 @@ export default class Card extends Component{
             <h6>
             Flight Number : {Flightnum}
             <br/>
-            Departure Time: {departuret}
+            Departure Time : {departuret}
             <br/>
-            Arrival Time: {arrivalt} 
+            Arrival Time : {arrivalt} 
             <br/>
-            Trip Duration: {tripDuration}
+            Trip Duration : {tripDuration}
             <br/>
-            Price: {"$"+price}
+            Price : {"$"+price}
             </h6>
           
 

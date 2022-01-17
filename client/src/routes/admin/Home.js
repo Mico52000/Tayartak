@@ -13,7 +13,6 @@ export default class Home extends Component {
     render(){
       return (
         <div className="Home">
-          
             <h2>Welcome to the admin's homepage!</h2>
             
           
