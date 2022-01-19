@@ -26,7 +26,7 @@ import SignIn from './routes/public/SignIn.js'
 import SignUp from './routes/public/SignUp.js'
 import GuestBookFlight from './routes/guest/bookTrip/BookTrip.js'
 import ErrorPage from './routes/public/ErrorPage.js'
-
+import EditSuccess from './routes/user/payment/editSuccess.js'
 export default class App extends Component {
 
 
@@ -75,6 +75,7 @@ export default class App extends Component {
             <Route path="/reservations" element={<Reservations />} />
             <Route path="/Popup/:id" element={<Popup />} />
             <Route path="/viewticket/:BookingId" element={<Itinerary />} />
+            <Route path = "/editSuccess" element = {<EditSuccess/>} />
             <Route path="/ChangeParent/:BookingId/:Id/:num" element={<ChangeParent/>}/>
           </Routes>
 
