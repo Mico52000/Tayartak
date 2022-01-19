@@ -549,7 +549,11 @@ App.get('/edit', async (req, res) => {
 App.put('/updateuser', async (req, res) => {
 
   const user = req.body;
-  // console.log(user);
+  user.Password=  await bcrypt.hash(user.Password, 10)
+
+  var userid = {_id: mongoose.Types.ObjectId(user._id)};
+  delete user._id
+
   var x = 0;
   Object.keys(user).forEach(key => {
     if (user[key] == null || user[key] == "" || user[key] == 0) {
@@ -557,15 +561,11 @@ App.put('/updateuser', async (req, res) => {
       x++;
     }
   });
-  // console.log(x);
-  // console.log(x == 6);
-
-  var num = mongoose.Types.ObjectId("61bff21874e339983be37a00");
-  //console.log(num);
-  const nid = { _id: num };
+ 
   try {
 
-    await UsersModel.updateOne(nid, user);
+    await UsersModel.updateOne(userid, user);
+    console.log(user);
     if (x != 6) {
       res.send("Updated!");
     }

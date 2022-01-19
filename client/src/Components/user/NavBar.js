@@ -23,8 +23,7 @@ export default class SearchBox extends Component{
 
               <a class="link dim white dib mr3" href="/user/reservations" title="reservations">My Reservations</a>
               <a class="link dim white dib mr3" href="/user/edit" title="Edit">View Profile</a>
-              <a class="link dim white dib mr3" href="/user/editseats/61e8359fde50cd9316a82b14/economy/2/61e34a5a512d74ecf79253e1/1" title="reservations">edit seats</a>
-              <a class="link dim white dib mr3" href="/" title="Search">Sign Out</a>
+             
               
               
               <a class="right link dim white dib mr3" onClick={this.handleSignOut} title="Search">Sign Out</a>
