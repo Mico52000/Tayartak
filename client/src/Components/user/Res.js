@@ -153,7 +153,7 @@ export default class res extends Component{
             <h2>Seats : {this.state.retSeats}</h2>
             <h2>Cabin : {this.state.CabinRet}</h2>
             <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" href ={`/user/ChangeParent/${BookingId}/${this.props.returnId}/${2}`}  >Change Flight</a>    
-            <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue"  onClick={this.removeSeatsRet} href ={`editseats/${this.props.returnId}/${this.props.CabRet}/${this.props.NumSeats}/${BookingId}/${2}`} >ChangeSeat</a>
+            <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue"  onClick={this.removeSeatsRet}  >ChangeSeat</a>
             
             </div>
             </div>

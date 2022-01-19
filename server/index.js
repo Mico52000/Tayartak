@@ -1093,7 +1093,7 @@ App.put('/removeSeatsDep', async (req, resp) => {
 
           const nid = { _id: num };
           try {
-            console.log(DepartureSeats[4])
+            
              await Flightmodel.updateOne(nid, { Seats: DepartureSeats });
 
             resp.send("Updated!");
@@ -1115,7 +1115,7 @@ App.put('/removeSeatsDep', async (req, resp) => {
 
 
 
-    await Flightmodel.findById(DepFlight,  (err, depFlight) => {
+    await Flightmodel.findById(DepFlight,  async (err, depFlight) => {
       if (!err) {
 
         if (cabin == "economy") {
@@ -1127,7 +1127,7 @@ App.put('/removeSeatsDep', async (req, resp) => {
           depFlight.NumberOfFirstSeats = depFlight.NumberOfFirstSeats - SeatsDep.length;
         }
 
-         Flightmodel.updateOne({ _id: DepFlight }, depFlight);
+        await  Flightmodel.updateOne({ _id: DepFlight }, depFlight);
 
       }
     }).clone();
@@ -1256,6 +1256,7 @@ async function  removeSeatsDep(resid){
   };
 }
 App.put('/removeSeatsRet', async (req, resp) => {
+
   // console.log(req.body)
   const resid = req.body.resid;
   // console.log(resid);
@@ -1264,8 +1265,9 @@ App.put('/removeSeatsRet', async (req, resp) => {
 
     reservation = result;
     // console.log(reservation);
-    const { DepFlight, SeatsDep, RetFlight, SeatsRet, cabin } = reservation;
+    const { RetFlight, SeatsRet, cabin } = reservation;
     var ReturnSeats = [];
+   
     Flightmodel.findById(RetFlight, async function (err, result) {
       if (err) {
         alert(err);
@@ -1273,38 +1275,46 @@ App.put('/removeSeatsRet', async (req, resp) => {
       else {
         try {
           ReturnSeats = result.Seats;
+          
           ReturnSeats.forEach(row => {
             row.forEach(seat => {
               if (seat != null) {
                 if (SeatsRet.includes(seat.id)) {
+                
                   seat.isReserved = false;
+                
                 }
               }
             })
           });
+           console.log(RetFlight);
           var num = mongoose.Types.ObjectId(RetFlight);
 
           const nid = { _id: num };
           try {
-            // console.log(ReturnSeats);
-            await Flightmodel.updateOne(nid, { Seats: ReturnSeats });
+            
+             await Flightmodel.updateOne(nid, { Seats: ReturnSeats });
 
+            resp.send("Updated!");
 
 
           } catch (err) {
             console.log(err);
           }
 
+
         }
         catch (err) {
-
+          resp.send("oops and error occured")
         }
 
       }
     });
+   
 
 
-    await Flightmodel.findById(RetFlight, async (err, retFlight) => {
+
+    await Flightmodel.findById(RetFlight, async  (err, retFlight) => {
       if (!err) {
 
         if (cabin == "economy") {
@@ -1316,12 +1326,15 @@ App.put('/removeSeatsRet', async (req, resp) => {
           retFlight.NumberOfFirstSeats = retFlight.NumberOfFirstSeats - SeatsRet.length;
         }
 
-        await Flightmodel.updateOne({ _id: RetFlight }, retFlight);
+        await  Flightmodel.updateOne({ _id: RetFlight }, retFlight);
 
       }
     }).clone();
 
-  })
+    
+
+  }
+  );
   const reservationToBeUpdated = {
     SeatsRet : []
   };
@@ -1342,53 +1355,63 @@ App.put('/removeSeatsRet', async (req, resp) => {
   
 });
 async function removeSeatsRet (resid){
+  // console.log(req.body)
   // console.log(resid);
   var reservation = {};
   Reservationmodel.findById(resid, async function (err, result) {
 
     reservation = result;
     // console.log(reservation);
-    const { DepFlight, SeatsDep, RetFlight, SeatsRet, cabin } = reservation;
+    const { RetFlight, SeatsRet, cabin } = reservation;
     var ReturnSeats = [];
+   
     Flightmodel.findById(RetFlight, async function (err, result) {
       if (err) {
-        alert(err);
+        
       }
       else {
         try {
           ReturnSeats = result.Seats;
+          
           ReturnSeats.forEach(row => {
             row.forEach(seat => {
               if (seat != null) {
                 if (SeatsRet.includes(seat.id)) {
+                
                   seat.isReserved = false;
+                
                 }
               }
             })
           });
+           console.log(RetFlight);
           var num = mongoose.Types.ObjectId(RetFlight);
 
           const nid = { _id: num };
           try {
-            // console.log(ReturnSeats);
-            await Flightmodel.updateOne(nid, { Seats: ReturnSeats });
+            
+             await Flightmodel.updateOne(nid, { Seats: ReturnSeats });
 
+            resp.send("Updated!");
 
 
           } catch (err) {
             console.log(err);
           }
 
+
         }
         catch (err) {
-
+          resp.send("oops and error occured")
         }
 
       }
     });
+   
 
 
-    await Flightmodel.findById(RetFlight, async (err, retFlight) => {
+
+    await Flightmodel.findById(RetFlight, async  (err, retFlight) => {
       if (!err) {
 
         if (cabin == "economy") {
@@ -1400,12 +1423,15 @@ async function removeSeatsRet (resid){
           retFlight.NumberOfFirstSeats = retFlight.NumberOfFirstSeats - SeatsRet.length;
         }
 
-        await Flightmodel.updateOne({ _id: RetFlight }, retFlight);
+        await  Flightmodel.updateOne({ _id: RetFlight }, retFlight);
 
       }
     }).clone();
 
-  })
+    
+
+  }
+  );
   const reservationToBeUpdated = {
     SeatsRet : []
   };
@@ -1421,9 +1447,7 @@ async function removeSeatsRet (resid){
   } catch (err) {
     console.log(err);
   }
- 
-
-  
+  resp.send("helllooo");
 }
 App.put('/removeSeats', async (req, resp) => {
   // console.log(req.body)
