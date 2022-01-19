@@ -900,7 +900,7 @@ App.get('/searchTrip', async (req, res) => {
 
 
 App.post('/confirmReservation', async (req, res) => {
-
+  var bookingId ;
   const reservationData = req.body;
   const reservation = new Reservationmodel({
     UserId: reservationData.userId,
@@ -909,12 +909,17 @@ App.post('/confirmReservation', async (req, res) => {
     NumSeats: reservationData.numberOfPassengers,
     Cabin: reservationData.cabin,
     SeatsDep: [],
-    SeatsRet: [],
-    TotalPrice: reservationData.totalPrice,
+    SeatsRet:[],
+    CabinDep :reservationData.cabin,
+    CabinRet : reservationData.cabin,  
+    TotalPrice : reservationData.totalPrice,
   });
-  await reservation.save();
+  await reservation.save(function(err,res) {
+    bookingId = res._id;
+    console.log(bookingId);
+ });
 
-
+    
   //now its time to decrement available seats in table flights
   await Flightmodel.findById(reservationData.selectedFlightIDDep, async (err, depFlight) => {
     if (!err) {
@@ -950,10 +955,33 @@ App.post('/confirmReservation', async (req, res) => {
     }
   }).clone();
 
-  // console.log("reservation added!");
-  res.send("reservation Added!");
+  var mailOptions = {
+    from: 'projectaclsp2@gmail.com',
+    to: 'linahma73@gmail.com',
+    subject: "Tayartak App  "+bookingId+"  "+ reservationData.depFrom+"/"+reservationData.depTo,
+    text: 'Internet Booking Tayartak \nBOOKINGREF : '+bookingId+' this is a round Trip Ticket '+reservationData.depFrom+'/'+reservationData.depTo+'\nDEPARTURE FLIGHT NUMBER: '+reservationData.depFlightNumber
+    +' \nDEPARTURE FLIGHT DEP DATE: '+reservationData.depDate+' \nDEPARTURE FLIGHT DEP TIME: '+reservationData.depDTime
+    +' \nDEPARTURE FLIGHT ARRIVAL TIME: '+reservationData.depATime+ " \nSEATS : "+reservationData.numberOfPassengers+"  \nCABIN: "
+    +reservationData.cabin+'  \nRETURN FLIGHT NUMBER: '+reservationData.retFlightNumber+' \nRETURN FLIGHT DEP DATE: '
+    +reservationData.retDate+' \nRETURN FLIGHT DEP TIME: '+reservationData.retDTime+' \nRETURN FLIGHT ARRIVAL TIME: '+reservationData.retATime+ " \nSEATS : "
+    +reservationData.numberOfPassengers+"  \nCABIN: "+reservationData.cabin +"\nTOTAL PRICE: "+reservationData.totalPrice+"$"
+
+  };
+  transporter.sendMail(mailOptions, function (err, info) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("mail sent");
+      
+    }
+  }
+  );
+  console.log("reservation added!");
+  res.send(bookingId);
 
 });
+
+
 
 App.get('/Summary/:departureId/:returnId/:num/:Cabin', async (req, res) => {
   // console.log("here");
@@ -979,49 +1007,21 @@ App.get('/Summary/:departureId/:returnId/:num/:Cabin', async (req, res) => {
 
 });
 
-App.get('/Itinerary/:userId/:departureId/:returnId/:num/:Cabin', (req, res) => {
-  // console.log("here");
-  const userId = req.params.userId;
-  const departureId = req.params.departureId;
-  const returnId = req.params.returnId;
-  const Query = { UserId: userId, DepFlight: departureId, RetFlight: returnId }
-  const Obj = {
-    arrayOne: [],
-    arrayTwo: []
-  };
-
-  Reservationsmodel.findOne(Query, (err, docs) => {
-    // if(err) throw err;
-    if (docs) {
-      // console.log(docs);
-      Obj.arrayOne.push(docs);
-      // console.log("1");
-      // console.log(Obj.arrayOne);
-
-    }
-  })
-
-  Flightmodel.findById(departureId, (err, docs) => {
-    Obj.arrayOne.push(docs);
-    // console.log(Obj.arrayOne);
-
-    // a.push(docs);
-    // console.log("2");
-    // console.log(a);
-  })
-  Flightmodel.findById(returnId, (err, docs) => {
-    Obj.arrayOne.push(docs);
-    // console.log(Obj.arrayOne);
-
-    // a.push(docs);
-    // console.log("3");
-    // console.log(a);
-  })
-  // console.log(Obj.arrayOne);
-  res.send(JSON.stringify(Obj.arrayOne));
-
-});
-
+App.get('/Itinerary/:bookingId', (req, res) => {
+  console.log(req.params.bookingId);
+    var array;
+    Reservationmodel.findById(req.params.bookingId, (err, docs) => {
+      // if(err) throw err;
+      if (docs) {
+       array= [docs.SeatsDep,docs.SeatsRet];
+       console.log(array);
+       res.send(array);
+      }
+    })
+  
+    
+  
+  });
 
 
 
@@ -1389,6 +1389,75 @@ App.get('/ticketBooking', async (req, resp) => {
 
   })
 });
+
+
+App.post('/create-checkout-session', async (req, res) => {
+  const url = req.body.prevPage;
+  const departureId = req.body.selectedFlightIDDep;  
+  console.log(departureId);
+  const from = req.body.from;
+  const to = req.body.to;
+  const returnId = req.body.selectedFlightIDRet;
+  console.log(returnId);
+  var departureFlight;
+  var returnFlight;
+  const Query = { _id: { $in: [departureId, returnId] } };
+  //console.log(Query);
+
+ const docs = await Flightmodel.find(Query) ;
+  departureFlight = docs[0];
+  returnFlight = docs[1];
+      const session = await stripe.checkout.sessions.create({
+         line_items: [
+           {
+             price_data: {
+               currency: 'usd',
+               product_data: {
+                 name: departureFlight["From"] +"/"+returnFlight["From"],
+               },
+               unit_amount: req.body.totalPrice*100,
+             },
+             quantity: 1,
+             description : "Number of Passengers :"+req.body.numberOfPassengers +"\n"+"Chosen Cabin :"+req.body.cabin,
+            
+           }
+         ],
+         metadata :{
+           DepId : departureId,
+           RetId : returnId,
+           userId : req.body.userId,
+           NumSeats : req.body.numberOfPassengers,
+           
+           DepFrom : departureFlight["From"],
+           DepTo : departureFlight["To"],
+           DepDate : departureFlight["FlightDate"],
+           DepDTime : departureFlight["DepartureTime"],
+           DepATime : departureFlight["ArrivalTime"],
+           DepFlightNumber : departureFlight["FlightNumber"],
+           Cabin : req.body.cabin,
+           TotalPrice : req.body.totalPrice,
+           RetFrom : returnFlight["From"],
+           RetTo : returnFlight["To"],
+           RetDate : returnFlight["FlightDate"],
+           RetDTime : returnFlight["DepartureTime"],
+           RetATime : returnFlight["ArrivalTime"],
+           RetFlightNumber : returnFlight["FlightNumber"],
+         },
+         mode: 'payment',
+         success_url: 'http://localhost:3000/user/success?session_id={CHECKOUT_SESSION_ID}',
+         cancel_url: url,
+       }
+       )
+       
+       res.send(session.url);
+     });
+
+     App.get('/session/:session_id', async (req, res) => {
+       console.log(req.params.session_id)
+      const session = await stripe.checkout.sessions.retrieve(req.params.session_id);
+      console.log(session);
+      res.send(session);
+     })
 
 
 //const flightaya = new Flightmodel({
