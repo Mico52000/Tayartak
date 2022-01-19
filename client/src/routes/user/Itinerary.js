@@ -9,7 +9,7 @@ import {useState,useEffect} from "react";
 import { Fragment } from 'react';
 //import Res from '../Components/user/Res.js';
 
-import  Res from '../../Components/user/Res.js';
+import  Res2 from '../../Components/user/Res2';
 
 function Itinerary(){
            const [departure,setDeparture]= useState("");
@@ -31,7 +31,7 @@ function Itinerary(){
            
          
             <Fragment>
-             <Res BookingId={bookingId} departureId={departureId} returnId ={returnId} Cab ={Cab} seatsDep={departure} seatsRet={returnS} TotalPrice={TotalPrice} />
+             <Res2 BookingId={bookingId} departureId={departureId} returnId ={returnId} Cab ={Cab} seatsDep={departure} seatsRet={returnS} TotalPrice={TotalPrice} />
             </Fragment>
           );
     
