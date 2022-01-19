@@ -57,6 +57,8 @@ App.post('/login', async (req, res) => {
         Username: user.Username,
       }
       const accessToken = generateAccessToken(user2)
+
+      user.Password=req.body.password;
       res.json({accessToken:accessToken,user:user})
      
     } else {
@@ -532,6 +534,7 @@ App.post('/addflight', async (req, res) => {
   }
 });
 App.get('/edit', async (req, res) => {
+ //console.log( req.body);
   let user = mongoose.Types.ObjectId("61bff21874e339983be37a00");
   UsersModel.findById(user, function (err, docs) {
     if (err) {
@@ -641,7 +644,7 @@ App.delete("/deleteres/:id", async (req, res) => {
       console.log(err);
     }
     else {
-      user = mongoose.Types.ObjectId(docs.UserId);
+      //user = mongoose.Types.ObjectId(docs.UserId);
       //mongoose.Types.ObjectId(docs.UserId);
       // console.log("Result : ", user);
       UsersModel.findById(user, function (err, docs) {
@@ -653,7 +656,7 @@ App.delete("/deleteres/:id", async (req, res) => {
           // console.log(docs);
           var mailOptions = {
             from: 'projectaclsp2@gmail.com',
-            to: docs.Email,
+            to: 'linahma73@gmail.com',
             subject: 'Canceled Reservation',
             text: 'This mail is to Inform you that you reservation with number :' + id + ' has been cancelled' + '  TotalPrice is ' + docs.TotalPrice
           };
@@ -706,7 +709,8 @@ App.put('/updateResDep', async (req, res) => {
 
 });
 App.get('/reservationsgetBooking', async (req, resp) => {
-  const userId = '61bff21874e339983be37a00';
+  console.log(req.query.id);
+  const userId = req.query.id;
   // console.log("dakhal");
   const Query = { UserId: userId };
   Reservationmodel.find(Query, (err, docs) => {

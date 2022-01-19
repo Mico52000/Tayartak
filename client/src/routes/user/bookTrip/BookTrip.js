@@ -51,7 +51,8 @@ export default class BookTrip extends React.Component {
       SelectedFlightRet: null,
 
       ErrorText: "",
-
+      token:sessionStorage.getItem("accessToken"),
+        loggedUser:JSON.parse(sessionStorage.getItem("loggedUser"))._id
 
     }
 
@@ -133,7 +134,7 @@ export default class BookTrip extends React.Component {
     Axios.post("http://localhost:8000/create-checkout-session",{
         
         prevPage :window.location.href,
-        userId:"61bff21874e339983be37a00",
+        userId:this.state.loggedUser,
         from :this.state.from,
         to : this.state.to,
         selectedFlightIDDep: this.state.SelectedFlightDep._id,

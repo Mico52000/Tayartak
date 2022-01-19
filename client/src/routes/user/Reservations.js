@@ -28,14 +28,15 @@ export default class Reservations extends Component{
             retDtime :"",
             retAtime :"",
             retSeats :[[]],
-            TotalPrice :0
-
+            TotalPrice :0,
+            token:sessionStorage.getItem("accessToken"),
+        loggedUser:JSON.parse(sessionStorage.getItem("loggedUser"))._id
         }
 
     }
     componentDidMount(){
         Axios.get("http://localhost:8000/reservationsgetBooking",{
-      params: {}
+      params: {id:this.state.loggedUser}
     }).then((resp)=>{this.setState({data : resp.data})}).catch((err)=> alert(err));
 
     }
