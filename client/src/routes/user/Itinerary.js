@@ -3,28 +3,35 @@ import 'tachyons';
 import Axios from 'axios';
 import { useParams } from 'react-router-dom';
 import {useState,useEffect} from "react";
-// import ITDept from '../Components/ITDept.js';
-// import ITRet from '../Components/ITRet';
-import Ticket from '../../Components/user/ticket';
-import Button from '@mui/material/Button';
-//import './Summary.css'
-//import CardListUser from '../Components/CardListUser.js';
+
+
+
 import { Fragment } from 'react';
-//import ResList from '../Components/Reslist.js'
-//import ticket from '../Components/ticket.js';
-//import ticket from '../../Components/user/ticket';
+//import Res from '../Components/user/Res.js';
+
+import  Res2 from '../../Components/user/Res2';
+
 function Itinerary(){
-
-        const  {BookingId} = useParams();
-        const Book = BookingId;
-        //const userId = "61bff21874e339983be37a00"
-        console.log(BookingId);
+           const [departure,setDeparture]= useState("");
+           const [returnS,setReturn] = useState("");
+           const {bookingId,departureId,returnId,Cab,TotalPrice,departureSeats} = useParams();
+          // console.log(departureSeats);
+           
+        useEffect(()=>{
+            Axios.get(`http://localhost:8000/Itinerary/${bookingId}`).then((resp)=>{setDeparture(resp.data[0]);
+            setReturn(resp.data[1]);
+            
+          });
+        },[]);
        
-        
-
+     
         return (
+          //  <h1>helllo</h1>
+          
+           
+         
             <Fragment>
-            <Ticket Id={Book} />
+             <Res2 BookingId={bookingId} departureId={departureId} returnId ={returnId} Cab ={Cab} seatsDep={departure} seatsRet={returnS} TotalPrice={TotalPrice} />
             </Fragment>
           );
     

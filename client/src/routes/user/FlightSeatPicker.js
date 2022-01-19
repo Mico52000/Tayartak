@@ -28,10 +28,27 @@ export default class FlightSeatPicker extends Component {
         retSeats : [],
         DisablebuttonA:false,
         DisablebuttonB:false,
+        DisablebuttonC :true,
+        departureId :"",
+        returnId :"",
+        Cab :"",
+        TotalPrice :0
       }
      
     componentDidMount(){
-        const {bookingNumber} = this.props;
+      const {bookingNumber,sessionIden} = this.props;
+      console.log(sessionIden);
+      Axios.get(`http://localhost:8000/session/${sessionIden}`).then(res =>{
+        this.setState({departureId : res.data.metadata.DepId,
+                        returnId : res.data.metadata.RetId,
+                        
+                         Cab :res.data.metadata.Cabin,
+                        TotalPrice : res.data.metadata.TotalPrice}
+                      )
+                      }).catch(err =>{console.log(err)});
+
+
+
         Axios.get("http://localhost:8000/searchReservation",{
             params: {resid:bookingNumber}
           }).then((resp)=>{this.setState({MaxSeats: resp.data.NumSeats,DepFlightId : resp.data.DepFlight,RetFlightId:resp.data.RetFlight});
@@ -331,6 +348,10 @@ export default class FlightSeatPicker extends Component {
 
             <p>*If the button is greyed out then this reservation has already booked seats</p>
             <Button disabled={this.state.DisablebuttonB} variant="contained" onClick={this.returnSeatsClick}>Submit return tickets</Button>
+            <div>
+                
+              <Button  href ={`/user/Itinerary/${this.props.bookingNumber}/${this.state.departureId}/${this.state.returnId}/${this.state.Cab}/${this.state.TotalPrice}/${this.state.DepSeats}/${this.state.retSeats}`} >View Your Itinerary</Button>
+              </div>
           </div>
         )
       }

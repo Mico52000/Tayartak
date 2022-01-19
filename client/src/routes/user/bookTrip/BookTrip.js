@@ -51,7 +51,8 @@ export default class BookTrip extends React.Component {
       SelectedFlightRet: null,
 
       ErrorText: "",
-
+      token:sessionStorage.getItem("accessToken"),
+        loggedUser:JSON.parse(sessionStorage.getItem("loggedUser"))._id
 
     }
 
@@ -128,21 +129,25 @@ export default class BookTrip extends React.Component {
 
   }
 
-  confirmReservation() {
-    Axios.post("http://localhost:8000/confirmReservation", {
-
-      userId: "61bff21874e339983be37a00",
-      selectedFlightIDDep: this.state.SelectedFlightDep._id,
-      selectedFlightIDRet: this.state.SelectedFlightRet._id,
-      numberOfPassengers: this.state.numberOfPassengers,
-      cabin: this.state.cabin,
-      totalPrice: this.state.numberOfPassengers * (this.state.cabin === "economy" ? this.state.SelectedFlightDep.PriceEconomy +
-        this.state.SelectedFlightRet.PriceEconomy : this.state.cabin === "business" ? this.state.SelectedFlightDep.PriceBusiness +
-          this.state.SelectedFlightRet.PriceBusiness : this.state.SelectedFlightDep.PriceFirst +
-      this.state.SelectedFlightRet.PriceFirst)
-
-    }).then((resp) => { console.log(resp.data) });
-
+  confirmReservation(){
+    //console.log(this.state.cabin);
+    Axios.post("http://localhost:8000/create-checkout-session",{
+        
+        prevPage :window.location.href,
+        userId:this.state.loggedUser,
+        from :this.state.from,
+        to : this.state.to,
+        selectedFlightIDDep: this.state.SelectedFlightDep._id,
+        selectedFlightIDRet: this.state.SelectedFlightRet._id,
+        numberOfPassengers: this.state.numberOfPassengers,
+        cabin: this.state.cabin,
+        totalPrice:this.state.numberOfPassengers*(this.state.cabin=== "economy"? this.state.SelectedFlightDep.PriceEconomy +
+        this.state.SelectedFlightRet.PriceEconomy: this.state.cabin==="business"? this.state.SelectedFlightDep.PriceBusiness +
+        this.state.SelectedFlightRet.PriceBusiness: this.state.SelectedFlightDep.PriceFirst +
+        this.state.SelectedFlightRet.PriceFirst)
+      
+    }).then((resp)=>{window.location = resp.data});
+    
   }
 
 
@@ -268,14 +273,14 @@ export default class BookTrip extends React.Component {
             <React.Fragment>
               {this.state.activeStep === steps.length ? (
                 <React.Fragment>
-                  <Typography variant="h5" gutterBottom>
+                  {/* <Typography variant="h5" gutterBottom>
                     Thank you for choosing Tayartak Airlines.
                   </Typography>
                   <Typography variant="subtitle1">
                     Your trip has been booked.
                   </Typography>
                   <a href="/user/reservations" title="reservations">Click here to view
-                    your reservations and pick your seats</a>
+                    your reservations and pick your seats</a> */}
                 </React.Fragment>
               ) : (
                 <React.Fragment>
@@ -299,7 +304,7 @@ export default class BookTrip extends React.Component {
                       onClick={this.handleNext}
                       sx={{ mt: 3, ml: 1 }}
                     >
-                      {this.state.activeStep === steps.length - 1 ? 'Confirm Reservation' : 'Next'}
+                      {this.state.activeStep === steps.length - 1 ? 'Proceed To Payment' : 'Next'}
                     </Button>
                   </Box>
                 </React.Fragment>
