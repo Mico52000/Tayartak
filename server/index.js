@@ -9,8 +9,9 @@ const nodemailer = require('nodemailer');
 const cors = require('cors');
 App.use(express.json());
 App.use(cors());
-const jwt = require('jsonwebtoken')
-const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const stripe = require('stripe')('sk_test_51KFLB0DgCy4UogHBfnDXPKBiSlQOBwqAzV5Fw9tRmvvtL7MeEBTFb4c1CWidgY8tlhkqjXWDBG1QHtKaMRcp45Ql00q8507skE')
 
 const port = process.env.PORT || 8000;
 mongoose.connect(process.env.MONGO_LINK, { useNewUrlParser: true }).then(result => console.log("MongoDB is now connected"))
@@ -187,7 +188,7 @@ App.post('/ChangeParent',(req,res)=>{
                   //console.log(Query);
                   res.send(Query);
                   }else{
-                    const Query = { numseats:docss.NumSeats,from:docs.From,to:docs.To,price:docss.TotalPrice,Rettime:docsss.FlightDate,retnum:docsss.FlightNumber,retarrt:docsss.ArrivalTime,retdept:docsss.DepartureTime,olddepCabin:docss.CabinDep,oldretCabin:docss.CabinRet,depprice:docs.PriceBusiness,retprice:docsss.PriceBusiness,oldId:flightId,notchanged:docss.RetFlight}
+                      const Query = { numseats:docss.NumSeats,from:docs.From,to:docs.To,price:docss.TotalPrice,Rettime:docsss.FlightDate,retnum:docsss.FlightNumber,retarrt:docsss.ArrivalTime,retdept:docsss.DepartureTime,olddepCabin:docss.CabinDep,oldretCabin:docss.CabinRet,depprice:docs.PriceBusiness,retprice:docsss.PriceBusiness,oldId:flightId,notchanged:docss.RetFlight}
                   //console.log(Query);
                   res.send(Query);
                   }
@@ -207,19 +208,152 @@ App.post('/ChangeParent',(req,res)=>{
 App.post('/changeReservation',async(req,res)=>{
   console.log(req.body);
   let bookingId=mongoose.Types.ObjectId(req.body.bookingId);
- if(req.body.num=='1'){
-  const nid = { _id: bookingId };
-      const change={DepFlight:req.body.newFlightID,CabinDep:req.body.newCabin};
-      await Reservationmodel.updateOne(nid, change);
- }else{
-  const nid = { _id: bookingId };
-  const change={RetFlight:req.body.newFlightID,CabinRet:req.body.newCabin};
-  await Reservationmodel.updateOne(nid, change);
- }
+  const url = req.body.prevPage;
+  const Numseats = req.body.Numseats;
+  const newFlight = req.body.newFlightID; 
+  const oldFlight = req.body.oldFlightID;      
+  const IdNotChanged = req.body.IdNotChanged;
+  const depCabin = req.body.oldCabinChanged;
+  const detect = req.body.num;
+  const oldCabin = req.body.oldCabin;  //unreserve biha
+  const newCabin = req.body.newCabin;
+  const totalPrice = req.body.TotalPrice;
+  const oldprice=req.body.oldprice;
+  var departureId ;     
+  var returnId;  
+  var departureFlight;
+  var returnFlight;
+  const Query = { _id: { $in: [IdNotChanged, newFlight] } };
+ const docs = await Flightmodel.find(Query) ;
+  departureFlight = docs[0];
+  returnFlight = docs[1];
+  if(req.body.num=='1'){
+    const nid = { _id: bookingId };
+        const change={DepFlight:req.body.newFlightID,CabinDep:req.body.newCabin,TotalPrice:oldprice+totalPrice};
+        await Reservationmodel.updateOne(nid, change);
+   }else{
+    const nid = { _id: bookingId };
+    const change={RetFlight:req.body.newFlightID,CabinRet:req.body.newCabin,TotalPrice:oldprice+totalPrice};
+    await Reservationmodel.updateOne(nid, change);
+   }
+  if(totalPrice >0){
+      const session = await stripe.checkout.sessions.create({
+         line_items: [
+           {
+             price_data: {
+               currency: 'usd',
+               product_data: {
+                 name: departureFlight["From"] +"/"+returnFlight["From"],
+               },
+               unit_amount: totalPrice*100,
+             },
+             quantity: 1,
+             description : "Number of Passengers :"+Numseats +"\n"+"Chosen Cabin :"+newCabin,
+            
+           }
+         ],
+         metadata :{
+          booking : bookingId, 
+          NumberOfSeats  : Numseats,
+          FlightId : newFlight,       
+          Cabin    : newCabin,
+          detect : detect,
+          DepId : departureId,
+          RetId : returnId,
+          DepFrom : departureFlight["From"],
+          DepTo : departureFlight["To"],
+          DepDate : departureFlight["FlightDate"],
+          DepDTime : departureFlight["DepartureTime"],
+          DepATime : departureFlight["ArrivalTime"],
+          DepFlightNumber : departureFlight["FlightNumber"],
+          TotalPrice : totalPrice,
+          RetFrom : returnFlight["From"],
+          RetTo : returnFlight["To"],
+          RetDate : returnFlight["FlightDate"],
+          RetDTime : returnFlight["DepartureTime"],
+          RetATime : returnFlight["ArrivalTime"],
+          RetFlightNumber : returnFlight["FlightNumber"],
+         },
+         mode: 'payment',
+         success_url: 'http://localhost:3000/user/editSuccess?session_id={CHECKOUT_SESSION_ID}',
+         cancel_url: url,
+       }
+       )
+       console.log(session.url);
+       res.send(session.url);
+       
+      }
+ 
+ 
 //lessa elseats
 //lessa elprice
 });
+///////////////////
+// App.post('/changeReservation', async (req, res) => {
+//   const url = req.body.prevPage;
+//   const Numseats = req.body.Numseats;
+//   const newFlight = req.body.newFlightID; 
+//   const oldFlight = req.body.oldFlightID;      
+//   const IdNotChanged = req.body.IdNotChanged;
+//   const depCabin = req.body.oldCabinChanged;
+//   const detect = req.body.num;
+//   const oldCabin = req.body.oldCabin;  //unreserve biha
+//   const newCabin = req.body.newCabin;
+//   const totalPrice = req.body.TotalPrice;
 
+//   var departureId ;     
+//   var returnId;  
+//   var departureFlight;
+//   var returnFlight;
+//   const Query = { _id: { $in: [departureId, returnId] } };
+//  const docs = await Flightmodel.find(Query) ;
+//   departureFlight = docs[0];
+//   returnFlight = docs[1];
+//       const session = await stripe.checkout.sessions.create({
+//          line_items: [
+//            {
+//              price_data: {
+//                currency: 'usd',
+//                product_data: {
+//                  name: departureFlight["From"] +"/"+returnFlight["From"],
+//                },
+//                unit_amount: totalPrice*100,
+//              },
+//              quantity: 1,
+//              description : "Number of Passengers :"+Numseats +"\n"+"Chosen Cabin :"+Cabin,
+            
+//            }
+//          ],
+//          metadata :{
+//           booking : bookingId, 
+//           NumberOfSeats  : Numseats,
+//           FlightId : newFlight,       
+//           Cabin    : Cabin,
+//           detect : detect,
+//           DepId : departureId,
+//           RetId : returnId,
+//           DepFrom : departureFlight["From"],
+//           DepTo : departureFlight["To"],
+//           DepDate : departureFlight["FlightDate"],
+//           DepDTime : departureFlight["DepartureTime"],
+//           DepATime : departureFlight["ArrivalTime"],
+//           DepFlightNumber : departureFlight["FlightNumber"],
+//           TotalPrice : totalPrice,
+//           RetFrom : returnFlight["From"],
+//           RetTo : returnFlight["To"],
+//           RetDate : returnFlight["FlightDate"],
+//           RetDTime : returnFlight["DepartureTime"],
+//           RetATime : returnFlight["ArrivalTime"],
+//           RetFlightNumber : returnFlight["FlightNumber"],
+//          },
+//          mode: 'payment',
+//          success_url: 'http://localhost:3000/user/editSuccess?session_id={CHECKOUT_SESSION_ID}',
+//          cancel_url: url,
+//        }
+//        )
+       
+//        res.send(session.url);
+//      });
 
 
 
@@ -1288,4 +1422,8 @@ App.get('/ticketBooking', async (req, resp) => {
 
 // });
 // flightaya.save();
+
+
+
+
 

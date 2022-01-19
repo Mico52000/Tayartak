@@ -110,6 +110,7 @@ export default class ChangeBooking extends React.Component {
     Axios.post("http://localhost:8000/changeReservation",{
         bookingId:this.props.bookingNumber,
         Numseats: this.props.Numseats,
+        oldprice:this.props.price,
         prevPage:window.location.href,
         newFlightID: this.state.SelectedFlightDep._id,
         oldFlightID:this.props.oldId,
@@ -118,14 +119,15 @@ export default class ChangeBooking extends React.Component {
         oldCabin:this.props.oldcabinret,
         oldCabinChanged:this.props.oldcabindep,
         newCabin: (this.state.cabin=="economy"?"economy":this.state.cabin=="business"?"business":"first"),
-        TotalPrice:(this.state.cabin=== "economy"? this.props.price-((this.state.SelectedFlightDep.PriceEconomy+this.props.retprice)*this.props.Numseats) : this.state.cabin==="business"? 
-        this.props.price-((this.state.SelectedFlightDep.PriceBusiness+this.props.retprice)*this.props.Numseats): this.props.price-((this.state.SelectedFlightDep.PriceFirst+this.props.retprice)*this.props.Numseats))
-    }).then((resp)=>{console.log(resp.data)});
+        TotalPrice:(this.state.cabin=== "economy"? ((this.state.SelectedFlightDep.PriceEconomy+this.props.retprice)*this.props.Numseats)-this.props.price: this.state.cabin==="business"? 
+        ((this.state.SelectedFlightDep.PriceBusiness+this.props.retprice)*this.props.Numseats)-this.props.price:((this.state.SelectedFlightDep.PriceFirst+this.props.retprice)*this.props.Numseats)-this.props.price)
+    }).then((resp)=>{window.location = resp.data});
   }else{
     Axios.post("http://localhost:8000/changeReservation",{
         bookingId:this.props.bookingNumber,
         Numseats: this.props.Numseats,
         prevPage:window.location.href,
+        oldprice:this.props.price,
         newFlightID: this.state.SelectedFlightRet._id,
         oldFlightID:this.props.oldId,
         IdNotChanged:this.props.notChanged,
@@ -133,9 +135,9 @@ export default class ChangeBooking extends React.Component {
         oldCabin:this.props.oldcabindep,
         oldCabinChanged:this.props.oldcabinret,
         newCabin: (this.state.cabin=="economy"?"economy":this.state.cabin=="business"?"business":"first"),
-        TotalPrice:(this.state.cabin=== "economy"? this.props.price-((this.state.SelectedFlightRet.PriceEconomy+this.props.depprice)*this.props.Numseats) : this.state.cabin==="business"? 
-        this.props.price-((this.state.SelectedFlightRet.PriceBusiness+this.props.depprice)*this.props.Numseats): this.props.price-((this.state.SelectedFlightDep.PriceFirst+this.props.depprice)*this.props.Numseats))
-    }).then((resp)=>{console.log(resp.data)});
+        TotalPrice:(this.state.cabin=== "economy"? ((this.state.SelectedFlightRet.PriceEconomy+this.props.depprice)*this.props.Numseats)-this.props.price : this.state.cabin==="business"? 
+        ((this.state.SelectedFlightRet.PriceBusiness+this.props.depprice)*this.props.Numseats)-this.props.price: ((this.state.SelectedFlightRet.PriceFirst+this.props.depprice)*this.props.Numseats-this.props.price))
+    }).then((resp)=>{window.location = resp.data});
   }
   }
   handleNext(e) {
@@ -300,7 +302,7 @@ export default class ChangeBooking extends React.Component {
   };
 
   render() {
-    return (
+    return(this.props.num=='1')?(
       <ThemeProvider theme={theme}>
         <CssBaseline />
 
@@ -324,13 +326,12 @@ export default class ChangeBooking extends React.Component {
               {this.state.activeStep === steps.length ? (
                 <React.Fragment>
                   <Typography variant="h5" gutterBottom>
-                    Thank you for choosing Tayartak Airlines.
+                    Thank you for choosing Tayartak Airlines. YOur Money will be refunded soon.
                   </Typography>
                   <Typography variant="subtitle1">
                     Your trip has been booked.
                   </Typography>
-                  <a href="/user/reservations" title="reservations">Click here to view 
-                    your reservations and pick your seats</a>
+                  <a href={`user/editseats/${this.state.SelectedFlightDep}/${this.state.cabin}/${this.props.Numseats}/${this.props.bookingNumber}/${this.props.num}`} title="reservations">Click here to pick your seats</a>
                 </React.Fragment>
               ) : (
                 <React.Fragment>
@@ -349,7 +350,7 @@ export default class ChangeBooking extends React.Component {
                       onClick={this.handleNext}
                       sx={{ mt: 3, ml: 1 }}
                     >
-                      {this.state.activeStep === steps.length - 1 ? 'ProceedToPayment' : 'Next'}
+                      {this.state.activeStep === steps.length - 1 ? 'Proceed To Payment' : 'Next'}
                     </Button>
                   </Box>
                 </React.Fragment>
@@ -360,6 +361,64 @@ export default class ChangeBooking extends React.Component {
 
         </Container>
       </ThemeProvider>
-    );
+    ):
+    <ThemeProvider theme={theme}>
+    <CssBaseline />
+
+
+    <Container component="main" maxWidth="sm" sx={{ mb: 4, minWidth: 700 }}>
+      <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
+
+        <Typography component="h1" variant="h4" align="center">
+          {this.props.text}
+        </Typography>
+
+        <Stepper activeStep={this.state.activeStep} sx={{ pt: 3, pb: 5 }}>
+          {steps.map((label) => (
+            <Step key={label}>
+              <StepLabel>{label}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+
+        <React.Fragment>
+          {this.state.activeStep === steps.length ? (
+            <React.Fragment>
+              <Typography variant="h5" gutterBottom>
+                Thank you for choosing Tayartak Airlines. YOur Money will be refunded soon.
+              </Typography>
+              <Typography variant="subtitle1">
+                Your trip has been booked.
+              </Typography>
+              <a href={`user/editseats/${this.state.SelectedFlightRet}/${this.state.cabin}/${this.props.Numseats}/${this.props.bookingNumber}/${this.props.num}`} title="reservations">Click here to pick your seats</a>
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              {this.getStepContent(this.state.activeStep)}
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                {this.state.activeStep !== 0 && (
+                  <Button onClick={this.handleBack} sx={{ mt: 3, ml: 1 }}>
+                    Back
+                  </Button>
+                )}
+                 <Typography variant="subtitle1">
+                {this.state.textt}
+              </Typography>
+                <Button
+                  variant="contained"
+                  onClick={this.handleNext}
+                  sx={{ mt: 3, ml: 1 }}
+                >
+                  {this.state.activeStep === steps.length - 1 ? 'Proceed To Payment' : 'Next'}
+                </Button>
+              </Box>
+            </React.Fragment>
+          )}
+        </React.Fragment>
+
+      </Paper>
+
+    </Container>
+  </ThemeProvider>
   }
 }
