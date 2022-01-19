@@ -27,6 +27,7 @@ import SignUp from './routes/public/SignUp.js'
 import GuestBookFlight from './routes/guest/bookTrip/BookTrip.js'
 import ErrorPage from './routes/public/ErrorPage.js'
 import EditSuccess from './routes/user/payment/editSuccess.js'
+import Success from './routes/user/payment/success.js';
 export default class App extends Component {
 
 
@@ -69,7 +70,7 @@ export default class App extends Component {
             <Route path="/Popup/:id" element={<Popup/>}/>
             <Route path="/editseats/:FlightID/:CabinClass/:NumSeats/:BookingNumber/:isDeparture" element={<FlightSeatEditorParent/>}/>
 
-            <Route path="/pickseats/:booking" element={<FlightSeatPickerParent />} />
+            <Route path="/pickseats/:booking/:sessionId" element={<FlightSeatPickerParent/>} />
             <Route path="/edit" element={<UserEdit />} />
             <Route path="/editdata/:username/:firstname/:lastname/:email/:passport" element={<Usereditdata />} />
             <Route path="/reservations" element={<Reservations />} />
@@ -77,6 +78,9 @@ export default class App extends Component {
             <Route path="/viewticket/:BookingId" element={<Itinerary />} />
             <Route path = "/editSuccess" element = {<EditSuccess/>} />
             <Route path="/ChangeParent/:BookingId/:Id/:num" element={<ChangeParent/>}/>
+
+            <Route path="/Itinerary/:bookingId/:departureId/:returnId/:Cab/:TotalPrice" element={<Itinerary/>}/>            
+            <Route path ="/success" element ={<Success/>}/>
           </Routes>
 
         </div>

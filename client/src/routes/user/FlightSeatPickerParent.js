@@ -6,13 +6,13 @@ import FlightSeatPicker from "./FlightSeatPicker";
 
 
 function FlightSeatPickerParent() {
-    const { booking } = useParams();
+    const { booking,sessionId } = useParams();
 
   
   return (
       <Fragment>
           
-          <FlightSeatPicker bookingNumber = {booking}/>
+          <FlightSeatPicker bookingNumber = {booking} sessionIden ={sessionId}/>
       </Fragment>
    
     );
