@@ -126,6 +126,206 @@ App.post('/register', async (req, res) => {
 })
 
 
+
+//change dep
+
+App.post('/ChangeParent',(req,res)=>{
+  let flightId = mongoose.Types.ObjectId(req.body.flightId);
+  let resId=mongoose.Types.ObjectId(req.body.res);
+  Flightmodel.findById(flightId, function (err, docs) {
+    if (err) {
+      console.log(err);
+    }
+    else {
+      Reservationmodel.findById(resId,function(err,docss){
+        if(err){
+          console.log(err);
+        }else{
+         //console.log(docss);
+          //console.log(docs);
+          Flightmodel.findById(docss.RetFlight,function(err,docsss){
+            if(err){
+              console.log(err);
+            }else{
+              //console.log(docss);
+             // console.log(docs.PriceFirst);
+              if(docss.CabinRet.toLowerCase()=='economy'){
+                if(docss.CabinDep.toLowerCase()=='economy'){
+                const Query = { numseats:docss.NumSeats,from:docs.From,to:docs.To,price:docss.TotalPrice,Rettime:docsss.FlightDate,retnum:docsss.FlightNumber,retarrt:docsss.ArrivalTime,retdept:docsss.DepartureTime,olddepCabin:docss.CabinDep,oldretCabin:docss.CabinRet,depprice:docs.PriceEconomy,retprice:docsss.PriceEconomy,oldId:flightId,notchanged:docss.RetFlight}
+                //console.log(Query);
+                res.send(Query);
+                }else if(docss.CabinDep.toLowerCase()=='first'){
+                  const Query = { numseats:docss.NumSeats,from:docs.From,to:docs.To,price:docss.TotalPrice,Rettime:docsss.FlightDate,retnum:docsss.FlightNumber,retarrt:docsss.ArrivalTime,retdept:docsss.DepartureTime,olddepCabin:docss.CabinDep,oldretCabin:docss.CabinRet,depprice:docs.PriceFirst,retprice:docsss.PriceEconomy,oldId:flightId,notchanged:docss.RetFlight}
+                //console.log(Query);
+                res.send(Query);
+                }else{
+                  const Query = { numseats:docss.NumSeats,from:docs.From,to:docs.To,price:docss.TotalPrice,Rettime:docsss.FlightDate,retnum:docsss.FlightNumber,retarrt:docsss.ArrivalTime,retdept:docsss.DepartureTime,olddepCabin:docss.CabinDep,oldretCabin:docss.CabinRet,depprice:docs.PriceBusiness,retprice:docsss.PriceEconomy,oldId:flightId,notchanged:docss.RetFlight}
+                //console.log(Query);
+                res.send(Query);
+                }
+              }else if(docss.CabinRet.toLowerCase()=='first'){
+                if(docss.CabinDep.toLowerCase()=='economy'){
+                  const Query = { numseats:docss.NumSeats,from:docs.From,to:docs.To,price:docss.TotalPrice,Rettime:docsss.FlightDate,retnum:docsss.FlightNumber,retarrt:docsss.ArrivalTime,retdept:docsss.DepartureTime,olddepCabin:docss.CabinDep,oldretCabin:docss.CabinRet,depprice:docs.PriceEconomy,retprice:docsss.PriceFirst,oldId:flightId,notchanged:docss.RetFlight}
+                  //console.log(Query);
+                  res.send(Query);
+                  }else if(docss.CabinDep.toLowerCase()=='first'){
+                    const Query = { numseats:docss.NumSeats,from:docs.From,to:docs.To,price:docss.TotalPrice,Rettime:docsss.FlightDate,retnum:docsss.FlightNumber,retarrt:docsss.ArrivalTime,retdept:docsss.DepartureTime,olddepCabin:docss.CabinDep,oldretCabin:docss.CabinRet,depprice:docs.PriceFirst,retprice:docsss.PriceFirst,oldId:flightId,notchanged:docss.RetFlight}
+                  //console.log(Query);
+                  res.send(Query);
+                  }else{
+                    const Query = { numseats:docss.NumSeats,from:docs.From,to:docs.To,price:docss.TotalPrice,Rettime:docsss.FlightDate,retnum:docsss.FlightNumber,retarrt:docsss.ArrivalTime,retdept:docsss.DepartureTime,olddepCabin:docss.CabinDep,oldretCabin:docss.CabinRet,depprice:docs.PriceBusiness,retprice:docsss.PriceFirst,oldId:flightId,notchanged:docss.RetFlight}
+                 // console.log(Query);
+                  res.send(Query);
+                  }
+              }else{
+                if(docss.CabinDep.toLowerCase()=='economy'){
+                  const Query = { numseats:docss.NumSeats,from:docs.From,to:docs.To,price:docss.TotalPrice,Rettime:docsss.FlightDate,retnum:docsss.FlightNumber,retarrt:docsss.ArrivalTime,retdept:docsss.DepartureTime,olddepCabin:docss.CabinDep,oldretCabin:docss.CabinRet,depprice:docs.PriceEconomy,retprice:docsss.PriceBusiness,oldId:flightId,notchanged:docss.RetFlight}
+                  //console.log(Query);
+                  res.send(Query);
+                  }else if(docss.CabinDep.toLowerCase()=='first'){
+                    const Query = { numseats:docss.NumSeats,from:docs.From,to:docs.To,price:docss.TotalPrice,Rettime:docsss.FlightDate,retnum:docsss.FlightNumber,retarrt:docsss.ArrivalTime,retdept:docsss.DepartureTime,olddepCabin:docss.CabinDep,oldretCabin:docss.CabinRet,depprice:docs.PriceFirst,retprice:docsss.PriceBusiness,oldId:flightId,notchanged:docss.RetFlight}
+                  //console.log(Query);
+                  res.send(Query);
+                  }else{
+                    const Query = { numseats:docss.NumSeats,from:docs.From,to:docs.To,price:docss.TotalPrice,Rettime:docsss.FlightDate,retnum:docsss.FlightNumber,retarrt:docsss.ArrivalTime,retdept:docsss.DepartureTime,olddepCabin:docss.CabinDep,oldretCabin:docss.CabinRet,depprice:docs.PriceBusiness,retprice:docsss.PriceBusiness,oldId:flightId,notchanged:docss.RetFlight}
+                  //console.log(Query);
+                  res.send(Query);
+                  }
+              }
+              
+            }
+          })
+          
+        }
+      })
+ 
+     
+    }
+  });
+})
+
+App.post('/changeReservation',async(req,res)=>{
+  console.log(req.body);
+  let bookingId=mongoose.Types.ObjectId(req.body.bookingId);
+ if(req.body.num=='1'){
+  const nid = { _id: bookingId };
+      const change={DepFlight:req.body.newFlightID,CabinDep:req.body.newCabin};
+      await Reservationmodel.updateOne(nid, change);
+ }else{
+  const nid = { _id: bookingId };
+  const change={RetFlight:req.body.newFlightID,CabinRet:req.body.newCabin};
+  await Reservationmodel.updateOne(nid, change);
+ }
+//lessa elseats
+//lessa elprice
+});
+
+
+
+
+
+
+App.post('/mailTicket',(req,res)=>{
+  //console.log("hi shaghal");
+  const resDetails=req.body;
+  console.log(resDetails);
+  var mailOptions = {
+    from: 'projectaclsp2@gmail.com',
+    to: 'linahma73@gmail.com',
+    subject: "Tayartak App  "+resDetails.bookingid+"  "+ resDetails.depFrom+"/"+resDetails.depTo,
+    text: 'Internet Booking Tayartak \nBOOKINGREF : '+resDetails.bookingid+'this is a round Trip Ticket '+resDetails.depFrom+'/'+resDetails.depTo+'\nDEPARTURE FLIGHT NUMBER: '+resDetails.depNumber+' \nDEPARTURE FLIGHT DEP DATE: '+resDetails.depDate+' \nDEPARTURE FLIGHT DEP TIME: '+resDetails.depDtime+' \nDEPARTURE FLIGHT ARRIVAL TIME: '+resDetails.depAtime+ " \nSEATS : "+resDetails.depSeats+"  \nCABIN: "+resDetails.Cabin+'  \nRETURN FLIGHT NUMBER: '+resDetails.retNumber+' \nRETURN FLIGHT DEP DATE: '+resDetails.retDate+' \nRETURN FLIGHT DEP TIME: '+resDetails.retDtime+' \nRETURN FLIGHT ARRIVAL TIME: '+resDetails.retAtime+ " \nSEATS : "+resDetails.retSeats+"  \nCABIN: "+resDetails.Cabin +"\nTOTAL PRICE: "+resDetails.TotalPrice+"$"
+
+  };
+  transporter.sendMail(mailOptions, function (err, info) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("mail sent");
+      re.send("Ticket is sent to your mail");
+    }
+  }
+  );
+});
+
+
+//retchange
+App.post('/ChangeParentRet',(req,res)=>{
+  let flightId = mongoose.Types.ObjectId(req.body.flightId);
+  let resId=mongoose.Types.ObjectId(req.body.res);
+  Flightmodel.findById(flightId, function (err, docs) {
+    if (err) {
+      console.log(err);
+    }
+    else {
+      Reservationmodel.findById(resId,function(err,docss){
+        if(err){
+          console.log(err);
+        }else{
+         //console.log(docss);
+          //console.log(docs);
+          Flightmodel.findById(docss.DepFlight,function(err,docsss){
+            if(err){
+              console.log(err);
+            }else{
+              // console.log(docs);
+              // console.log(docs.PriceFirst);
+              if(docss.CabinDep.toLowerCase()=='economy'){
+                if(docss.CabinRet.toLowerCase()=='economy'){
+                  const Query = { numseats:docss.NumSeats,from:docs.From,to:docs.To,price:docss.TotalPrice,Deptime:docsss.FlightDate,Depnum:docsss.FlightNumber,Deparrt:docsss.ArrivalTime,Depdept:docsss.DepartureTime,olddepCabin:docss.CabinDep,oldretCabin:docss.CabinRet,oldprice:docs.PriceEconomy,Depprice:docsss.PriceEconomy,oldId:flightId,notchanged:docss.DepFlight};
+                  console.log(Query);
+                  res.send(Query);
+                  }else if(docss.CabinRet.toLowerCase()=='first'){
+                    const Query = { numseats:docss.NumSeats,from:docs.From,to:docs.To,price:docss.TotalPrice,Deptime:docsss.FlightDate,Depnum:docsss.FlightNumber,Deparrt:docsss.ArrivalTime,Depdept:docsss.DepartureTime,olddepCabin:docss.CabinDep,oldretCabin:docss.CabinRet,oldprice:docs.PriceFirst,Depprice:docsss.PriceEconomy,oldId:flightId,notchanged:docss.DepFlight};
+                  console.log(Query);
+                  res.send(Query);
+                  }else{
+                    const Query = { numseats:docss.NumSeats,from:docs.From,to:docs.To,price:docss.TotalPrice,Deptime:docsss.FlightDate,Depnum:docsss.FlightNumber,Deparrt:docsss.ArrivalTime,Depdept:docsss.DepartureTime,olddepCabin:docss.CabinDep,oldretCabin:docss.CabinRet,oldprice:docs.PriceBusiness,Depprice:docsss.PriceEconomy,oldId:flightId,notchanged:docss.DepFlight}
+                  console.log(Query);
+                  res.send(Query);
+                  }
+               // const Query = { numseats:docss.NumSeats,from:docs.From,to:docs.To,price:docss.TotalPrice,Deptime:docsss.FlightDate,Depnum:docsss.FlightNumber,Deparrt:docsss.ArrivalTime,Depdept:docsss.DepartureTime,olddepCabin:docss.CabinDep,oldretCabin:docss.CabinRet,oldprice:docs.PriceEconomy,Depprice:docsss.PriceEconomy,oldId:docss.DepFlight}
+                //console.log(Query);
+                //res.send(Query);
+              }else if(docss.CabinDep.toLowerCase()=='first'){
+                if(docss.CabinRet.toLowerCase()=='economy'){
+                  const Query = { numseats:docss.NumSeats,from:docs.From,to:docs.To,price:docss.TotalPrice,Deptime:docsss.FlightDate,Depnum:docsss.FlightNumber,Deparrt:docsss.ArrivalTime,Depdept:docsss.DepartureTime,olddepCabin:docss.CabinDep,oldretCabin:docss.CabinRet,oldprice:docs.PriceEconomy,Depprice:docsss.PriceFirst,oldId:flightId,notchanged:docss.DepFlight};
+                  console.log(Query);
+                  res.send(Query);
+                  }else if(docss.CabinRet.toLowerCase()=='first'){
+                    const Query = { numseats:docss.NumSeats,from:docs.From,to:docs.To,price:docss.TotalPrice,Deptime:docsss.FlightDate,Depnum:docsss.FlightNumber,Deparrt:docsss.ArrivalTime,Depdept:docsss.DepartureTime,olddepCabin:docss.CabinDep,oldretCabin:docss.CabinRet,oldprice:docs.PriceFirst,Depprice:docsss.PriceFirst,oldId:flightId,notchanged:docss.DepFlight};
+                    console.log(Query);
+                  res.send(Query);
+                  }else{
+                    const Query = { numseats:docss.NumSeats,from:docs.From,to:docs.To,price:docss.TotalPrice,Deptime:docsss.FlightDate,Depnum:docsss.FlightNumber,Deparrt:docsss.ArrivalTime,Depdept:docsss.DepartureTime,olddepCabin:docss.CabinDep,oldretCabin:docss.CabinRet,oldprice:docs.PriceBusiness,Depprice:docsss.PriceFirst,oldId:flightId,notchanged:docss.DepFlight};
+                  console.log(Query);
+                  res.send(Query);
+                  }
+              }else{
+                if(docss.CabinRet.toLowerCase()=='economy'){
+                  const Query = { numseats:docss.NumSeats,from:docs.From,to:docs.To,price:docss.TotalPrice,Deptime:docsss.FlightDate,Depnum:docsss.FlightNumber,Deparrt:docsss.ArrivalTime,Depdept:docsss.DepartureTime,olddepCabin:docss.CabinDep,oldretCabin:docss.CabinRet,oldprice:docs.PriceEconomy,Depprice:docsss.PriceBusiness,oldId:flightId,notchanged:docss.DepFlight};
+                  console.log(Query);
+                  res.send(Query);
+                  }else if(docss.CabinRet.toLowerCase()=='first'){
+                    const Query = { numseats:docss.NumSeats,from:docs.From,to:docs.To,price:docss.TotalPrice,Deptime:docsss.FlightDate,Depnum:docsss.FlightNumber,Deparrt:docsss.ArrivalTime,Depdept:docsss.DepartureTime,olddepCabin:docss.CabinDep,oldretCabin:docss.CabinRet,oldprice:docs.PriceFirst,Depprice:docsss.PriceBusiness,oldId:flightId,notchanged:docss.DepFlight};
+                    console.log(Query);
+                  res.send(Query);
+                  }else{
+                    const Query = { numseats:docss.NumSeats,from:docs.From,to:docs.To,price:docss.TotalPrice,Deptime:docsss.FlightDate,Depnum:docsss.FlightNumber,Deparrt:docsss.ArrivalTime,Depdept:docsss.DepartureTime,olddepCabin:docss.CabinDep,oldretCabin:docss.CabinRet,oldprice:docs.PriceBusiness,Depprice:docsss.PriceBusiness,oldId:flightId,notchanged:docss.DepFlight};
+                  console.log(Query);
+                  res.send(Query);
+                  }
+              }
+              
+            }
+          })
+          
+        }
+      })
+ 
+     
+    }
+  });
+})
 App.post('/addflight', async (req, res) => {
 
 
@@ -656,7 +856,7 @@ App.get('/Itinerary/:userId/:departureId/:returnId/:num/:Cabin', (req, res) => {
     arrayTwo: []
   };
 
-  ReservationsModel.findOne(Query, (err, docs) => {
+  Reservationsmodel.findOne(Query, (err, docs) => {
     // if(err) throw err;
     if (docs) {
       // console.log(docs);

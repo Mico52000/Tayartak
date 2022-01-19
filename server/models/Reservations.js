@@ -24,7 +24,12 @@ UserId :{
   },
   TotalPrice : {
       type : Number
-  },
+  },CabinDep:{
+    type:String
+},
+CabinRet:{
+      type:String
+},
   SeatsDep : [],
   SeatsRet:[],
   
