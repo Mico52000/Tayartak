@@ -133,7 +133,7 @@ export default class FlightSeatEditor extends Component {
         
         if(this.state.DepSeats.length!=this.state.MaxSeats)
             {
-              alert(`Please select ${this.state.MaxSeats} for the departure flight`);
+              alert(`Please select ${this.state.MaxSeats} for your flight`);
               return
               
             }
@@ -177,7 +177,7 @@ export default class FlightSeatEditor extends Component {
     returnSeatsClick =(e) => {
       if(this.state.DepSeats.length!=this.state.MaxSeats)
           {
-            alert(`Please select ${this.state.MaxSeats} for the return flight`);
+            alert(`Please select ${this.state.MaxSeats} for your flight`);
             return
             
           }

@@ -17,9 +17,9 @@ import UserHome from './routes/user/Home.js'
 import UserBookFlight from './routes/user/bookTrip/BookTrip.js'
 import FlightSeatPickerParent from './routes/user/FlightSeatPickerParent.js';
 import Reservations from './routes/user/Reservations.js';
-<<<<<<< HEAD
+
 import FlightSeatEditorParent from './routes/user/FlightSeatEditorParent.js';
-=======
+
 import Itinerary from './routes/user/Itinerary.js';
 
 import SignIn from './routes/public/SignIn.js'
@@ -27,7 +27,6 @@ import SignUp from './routes/public/SignUp.js'
 import GuestBookFlight from './routes/guest/bookTrip/BookTrip.js'
 import ErrorPage from './routes/public/ErrorPage.js'
 
->>>>>>> f389dd520406f32aca5e2d513b7e8ed33b558afc
 export default class App extends Component {
 
 
@@ -62,21 +61,21 @@ export default class App extends Component {
             <Route path="/" element={<UserHome />} />
             <Route path="/home" element={<UserHome />} />
             <Route path="/bookflight" element={<UserBookFlight />} />
-<<<<<<< HEAD
+
             <Route path="/pickseats/:booking" element={<FlightSeatPickerParent/>} />
             <Route path="/edit" element={<UserEdit/>}/>
             <Route path="/editdata/:username/:firstname/:lastname/:email/:passport" element={<Usereditdata/>}/>
             <Route path="/reservations" element ={<Reservations/>} />
             <Route path="/Popup/:id" element={<Popup/>}/>
             <Route path="/editseats/:FlightID/:CabinClass/:NumSeats/:BookingNumber/:isDeparture" element={<FlightSeatEditorParent/>}/>
-=======
+
             <Route path="/pickseats/:booking" element={<FlightSeatPickerParent />} />
             <Route path="/edit" element={<UserEdit />} />
             <Route path="/editdata/:username/:firstname/:lastname/:email/:passport" element={<Usereditdata />} />
             <Route path="/reservations" element={<Reservations />} />
             <Route path="/Popup/:id" element={<Popup />} />
             <Route path="/viewticket/:BookingId" element={<Itinerary />} />
->>>>>>> f389dd520406f32aca5e2d513b7e8ed33b558afc
+
           </Routes>
 
         </div>
