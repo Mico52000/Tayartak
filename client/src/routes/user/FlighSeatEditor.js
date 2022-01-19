@@ -39,6 +39,7 @@ export default class FlightSeatEditor extends Component {
 
 }).catch((err)=> alert(err));
         this.generateRows(FlightID);
+        
            
     };
 

@@ -331,7 +331,7 @@ export default class ChangeBooking extends React.Component {
                   <Typography variant="subtitle1">
                     Your trip has been booked.
                   </Typography>
-                  <a href={`user/editseats/${this.state.SelectedFlightDep}/${this.state.cabin}/${this.props.Numseats}/${this.props.bookingNumber}/${this.props.num}`} title="reservations">Click here to pick your seats</a>
+                  <a href={`/user/editseats/${this.state.SelectedFlightDep._id}/${this.state.cabin}/${this.props.Numseats}/${this.props.bookingNumber}/${this.props.num}`} title="reservations">Click here to pick your seats</a>
                 </React.Fragment>
               ) : (
                 <React.Fragment>
@@ -390,7 +390,7 @@ export default class ChangeBooking extends React.Component {
               <Typography variant="subtitle1">
                 Your trip has been booked.
               </Typography>
-              <a href={`user/editseats/${this.state.SelectedFlightRet}/${this.state.cabin}/${this.props.Numseats}/${this.props.bookingNumber}/${this.props.num}`} title="reservations">Click here to pick your seats</a>
+              <a href={`/user/editseats/${this.state.SelectedFlightRet._id}/${this.state.cabin}/${this.props.Numseats}/${this.props.bookingNumber}/${this.props.num}`} title="reservations">Click here to pick your seats</a>
             </React.Fragment>
           ) : (
             <React.Fragment>

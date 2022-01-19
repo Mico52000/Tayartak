@@ -31,6 +31,8 @@ export default class res extends Component{
         
     }
     this.buttonClick= this.buttonClick.bind(this);
+    this.removeSeatsDep= this.removeSeatsDep.bind(this);
+    this.removeSeatsRet= this.removeSeatsRet.bind(this);
     }
     componentDidMount(){
         Axios.get("http://localhost:8000/reservationsgetFlights",{
@@ -80,7 +82,30 @@ export default class res extends Component{
     
   }
 
-   
+   removeSeatsDep(ev){
+    ev.preventDefault();
+    const {BookingId,departureId,CabDep,NumSeats} = this.props;
+        Axios.put('//localhost:8000/removeSeatsDep',{
+            resid: this.props.BookingId
+        });
+        setTimeout(function() {
+            window.location.href = `editseats/${departureId}/${CabDep}/${NumSeats}/${BookingId}/${1}`;
+        },500); // run after 500 milliseconds
+
+        
+   }
+
+   removeSeatsRet(ev){
+    ev.preventDefault();
+    const {BookingId,returnId,CabRet,NumSeats} = this.props;
+    Axios.put('//localhost:8000/removeSeatsRet',{
+        resid: this.props.BookingId
+    });
+    setTimeout(function() {
+        window.location.href = `editseats/${returnId}/${CabRet}/${NumSeats}/${BookingId}/${2}`;
+    },500); // run after 500 milliseconds
+    
+}
    
        
     render()
@@ -113,7 +138,7 @@ export default class res extends Component{
             <h2>Cabin : {this.state.CabinDep}</h2>
            
             <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" href ={`/user/ChangeParent/${BookingId}/${this.props.departureId}/${1}`}  >Change Flight</a>   
-            <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" href ={`editseats/${this.props.departureId}/${this.props.CabDep}/${this.props.NumSeats}/${BookingId}/${1}`} >ChangeSeat</a>
+            <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" onClick={this.removeSeatsDep} >ChangeSeat</a>
            
             </div>
            
@@ -128,7 +153,7 @@ export default class res extends Component{
             <h2>Seats : {this.state.retSeats}</h2>
             <h2>Cabin : {this.state.CabinRet}</h2>
             <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" href ={`/user/ChangeParent/${BookingId}/${this.props.returnId}/${2}`}  >Change Flight</a>    
-            <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" href ={`editseats/${this.props.returnId}/${this.props.CabRet}/${this.props.NumSeats}/${BookingId}/${1}`} >ChangeSeat</a>
+            <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue"  onClick={this.removeSeatsRet} href ={`editseats/${this.props.returnId}/${this.props.CabRet}/${this.props.NumSeats}/${BookingId}/${2}`} >ChangeSeat</a>
             
             </div>
             </div>
