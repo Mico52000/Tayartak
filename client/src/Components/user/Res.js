@@ -17,7 +17,9 @@ export default class res extends Component{
         depDtime :"",
         depAtime :"",
         depSeats :"",
-        Cabin :"",
+        CabinDep :"",
+        CabinRet:"",
+        Cabin:"",
         retFrom : "",
         retTo :"",
         retDate :"",
@@ -28,11 +30,11 @@ export default class res extends Component{
         TotalPrice :0
         
     }
-    
+    this.buttonClick= this.buttonClick.bind(this);
     }
     componentDidMount(){
         Axios.get("http://localhost:8000/reservationsgetFlights",{
-            params:{flightId : this.props.departureId}
+            params:{flightId : this.props.departureId ,bookingId:this.props.BookingId}
          }).then((resp) =>{this.setState({depFrom : resp.data.From,
         depTo :resp.data.To,
          depDate :resp.data.FlightDate,
@@ -41,10 +43,11 @@ export default class res extends Component{
          depAtime :resp.data.ArrivalTime,
           depSeats : ""+this.props.seatsDep,
           Cabin :this.props.Cab,
+        CabinDep:this.props.CabDep
        })}).catch((err)=> alert(err));
      
        Axios.get("http://localhost:8000/reservationsgetFlights",{
-        params:{flightId : this.props.returnId}
+        params:{flightId : this.props.returnId,bookingId:this.props.BookingId}
      }).then((resp) =>{this.setState({retFrom : resp.data.From,
     retTo :resp.data.To,
      retDate :resp.data.FlightDate,
@@ -52,11 +55,32 @@ export default class res extends Component{
      retDtime :resp.data.DepartureTime,
      retAtime :resp.data.ArrivalTime,
       retSeats : ""+this.props.seatsRet,
-      
+      CabinRet:this.props.CabRet
    })}).catch((err)=> alert(err));
    
     }
+    buttonClick(){
+        Axios.post("http://localhost:8000/mailTicket",{
+        depFrom : this.state.depFrom,
+        depTo :this.state.depTo,
+        depDate :this.state.depDate,
+        depNumber :this.state.depNumber,
+        depDtime :this.state.depDtime,
+        depAtime :this.state.depAtime,
+        depSeats :this.state.depSeats,
+        Cabin :this.state.Cabin,
+        retDate :this.state.retDate,
+        retNumber :this.state.retNumber,
+        retDtime :this.state.retDtime,
+        retAtime :this.state.retAtime,
+        retSeats :this.state.retSeats,
+        TotalPrice :this.props.TotalPrice,
+        bookingid:this.props.BookingId
+    }).then((resp)=>{console.log(resp.data)});
     
+  }
+
+   
    
        
     render()
@@ -69,14 +93,16 @@ export default class res extends Component{
             
             
     return(
-          
-        <div className=" cardbg tc bg-blue  dib br3 ma2 pa3  shadow-5 w5 ">
-            <div class ="book">
-            <h2>BookingId : {BookingId}</h2>
-            <h1>Total Price :{TotalPrice}</h1>
+        <div className="main2">
+        <div className="sub-main2">
+        <div className='dep'>
+           <h2> BookingId : {BookingId}</h2>
+            <h2>Total Price :{TotalPrice}$</h2>
+
             </div>
+            <div className="flights">
             <div class="departure">
-            <h1> Departure</h1>
+            <h1> Departure</h1> 
             <h2> From: {this.state.depFrom}</h2>
             <h2>To : {this.state.depTo}</h2>
             <h2>Date :{this.state.depDate}</h2>
@@ -84,8 +110,13 @@ export default class res extends Component{
             <h2>Departure Time :{this.state.depDtime}</h2>
             <h2>Arrival Time: {this.state.depAtime}</h2>
             <h2>Seats : {this.state.depSeats}</h2>
-            <h2>Cabin : {this.state.Cabin}</h2>
+            <h2>Cabin : {this.state.CabinDep}</h2>
+           
+            <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" href ={`/user/ChangeParent/${BookingId}/${this.props.departureId}/${1}`}  >Change Flight</a>   
+            <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" href ={`pickseats/${BookingId}`} >ChangeSeat</a>
+           
             </div>
+           
             <div class ="return">
             <h1>Return </h1>
             <h2> From: {this.state.retFrom}</h2>
@@ -95,16 +126,33 @@ export default class res extends Component{
             <h2>Departure Time :{this.state.retDtime}</h2>
             <h2>Arrival Time: {this.state.retAtime}</h2>
             <h2>Seats : {this.state.retSeats}</h2>
-            <h2>Cabin : {this.state.Cabin}</h2>
+            <h2>Cabin : {this.state.CabinRet}</h2>
+            <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" href ={`/user/ChangeParent/${BookingId}/${this.props.returnId}/${2}`}  >Change Flight</a>    
+            <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" href ={`pickseats/${BookingId}`} >ChangeSeat</a>
+            
             </div>
-            <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" href ={`Popup/${BookingId}`} >Cancel</a>
-            <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" href ={`pickseats/${BookingId}`} >Pick A Seat</a>
-            <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" href ={`viewticket/${BookingId}`} >View Ticket</a>
-            {/* <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" onClick={(event) =>this.buttonClick(ObjectId,event)}>Delete</a> */}
-          {/* //  <a class ="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" onClick ={() =>{var result = window.confirm("Want to delete?"); */}
+            </div>
+            <div className='buttons'>
+            <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue"  onClick={(event) =>this.buttonClick()}>Email My Ticket</a>   
+             <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" href ={`Popup/${BookingId}`} >Cancel</a>
+
+            </div>
 
             
-        </div>
+            </div>
+
+             {/* <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" href ={`/user/ChangeParent/${this.state.depTo}`}  >Change Flight</a>    
+            <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" href ={`Popup/${BookingId}`} >Cancel</a>
+            <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" href ={`pickseats/${BookingId}`} >Pick A Seat</a>
+            <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue"   >Email My Ticket</a>     */}
+
+            {/* <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" href ={`viewticket/${}`} >View Ticket</a> */}
+            {/* <a class="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" onClick={(event) =>this.buttonClick(ObjectId,event)}>Delete</a> */}
+          {/* //  <a class ="f6 grow no-underline br-pill ph3 pv2 mb2 dib white bg-dark-blue" onClick ={() =>{var result = window.confirm("Want to delete?"); */}
+          </div>
+       
+            
+       
     )
     }
 }

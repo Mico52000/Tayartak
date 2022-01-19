@@ -1,7 +1,11 @@
-.cardbg{
-    background-color: #189AB4;
+/* .cardbg{
+    background-color: white;
     width : 700px;
-    flex-direction :row
+    flex-direction :column
+    
+}
+.jj{
+    flex-direction: row;
 }
 .departure{
    text-align:left;
@@ -13,4 +17,51 @@
  }
 .book{
     font-size :20px;
+    flex-direction: row;
+} */
+.main2{
+    text-align: left;
+    justify-content: left;
+    display: flex;
+    flex-direction: row;
+    padding: 50px 0 90px 0;
+    background-color: rgb(223, 222, 222)
+}
+.sub-main2{
+    display: flex;
+    flex-direction: column;
+    height: 690px;
+    width: 65%;
+    border-color: blue;
+    border-top-width: thick;
+    box-shadow: 20px 20px 13x 12px rgb(207,207,207);
+    border-radius: 60px;
+    background-color:white;
+}
+.flights{
+    display: flex;
+    flex-direction: row;
+}
+.buttons{
+    display: flex;
+    flex-direction: row;
+    padding-left: 290px;
+}
+.dep{
+    display:flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+    font-size: large;
+}
+.departure{
+    text-align: left;
+    padding-left: 50px;
+    /* /* padding-top: 50px; */
+} 
+.return{
+    text-align: left;
+    justify-content: right;
+    padding-left: 250px;
+    /* padding-top: 35px; */
 }

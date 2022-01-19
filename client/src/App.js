@@ -4,7 +4,7 @@ import 'tachyons';
 
 import AdminNavBar from './Components/admin/NavBar.js'
 import UserNavBar from './Components/user/NavBar.js'
-
+import ChangeParent from './routes/user/ChangeParent.js';
 import UserEdit from './routes/user/Edit.js'
 import Usereditdata from './routes/user/editdata.js'
 import AdminHome from './routes/admin/Home.js'
@@ -75,7 +75,7 @@ export default class App extends Component {
             <Route path="/reservations" element={<Reservations />} />
             <Route path="/Popup/:id" element={<Popup />} />
             <Route path="/viewticket/:BookingId" element={<Itinerary />} />
-
+            <Route path="/ChangeParent/:BookingId/:Id/:num" element={<ChangeParent/>}/>
           </Routes>
 
         </div>
