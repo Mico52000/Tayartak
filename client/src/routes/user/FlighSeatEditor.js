@@ -185,7 +185,7 @@ export default class FlightSeatEditor extends Component {
       Axios.put("http://localhost:8000/updateResRet",{
         _id : BookingNumber,
         SeatsRet:this.state.DepSeats}).then(()=>{
-          console.log()
+          
         alert("Flight Updated");
     });
 

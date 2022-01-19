@@ -90,7 +90,7 @@ export default class res extends Component{
         });
         setTimeout(function() {
             window.location.href = `editseats/${departureId}/${CabDep}/${NumSeats}/${BookingId}/${1}`;
-        },500); // run after 500 milliseconds
+        },400); // run after 500 milliseconds
 
         
    }
@@ -103,7 +103,7 @@ export default class res extends Component{
     });
     setTimeout(function() {
         window.location.href = `editseats/${returnId}/${CabRet}/${NumSeats}/${BookingId}/${2}`;
-    },500); // run after 500 milliseconds
+    },400); // run after 500 milliseconds
     
 }
    
