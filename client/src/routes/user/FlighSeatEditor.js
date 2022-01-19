@@ -25,20 +25,19 @@ export default class FlightSeatEditor extends Component {
       
     }
     componentDidMount(){
-        const {FlightID , CabinClass,NumSeats} = this.props;
+        const {FlightID , CabinClass,NumSeats, isDeparture,BookingNumber} = this.props;
         this.setState({DepFlightId : FlightID});
         this.setState({ReservationCabin : CabinClass});
         this.setState({MaxSeats : NumSeats })
-        // Axios.get("http://localhost:8000/searchReservation",{
-        //     params: {resid:bookingNumber}
-        //   }).then((resp)=>{this.setState({MaxSeats: resp.data.NumSeats,DepFlightId : resp.data.DepFlight,RetFlightId:resp.data.RetFlight});
-        //    this.generateRows(resp.data.DepFlight,resp.data.RetFlight);
-        //    this.setState({ReservationCabin : resp.data.Cabin});
-        //    if(resp.data.SeatsDep.length>0)
-        //       this.setState({DisablebuttonA:true});
-        //     if(resp.data.SeatsRet.length>0)
-        //       this.setState({DisablebuttonB:true});
-        //   }).catch((err)=> alert(err));
+        Axios.get("http://localhost:8000/searchReservation",{
+            params: {resid:BookingNumber}
+          }).then((resp)=>{
+           if(resp.data.SeatsDep.length>0 && isDeparture == 1)
+              this.setState({DisablebuttonA:true});
+            if(resp.data.SeatsRet.length>0 && isDeparture  == 2)
+              this.setState({DisablebuttonA:true});
+
+}).catch((err)=> alert(err));
         this.generateRows(FlightID);
            
     };
@@ -181,10 +180,11 @@ export default class FlightSeatEditor extends Component {
             return
             
           }
-      const {bookingNumber} = this.props;
+      const {BookingNumber} = this.props;
       Axios.put("http://localhost:8000/updateResRet",{
-        _id : bookingNumber,
+        _id : BookingNumber,
         SeatsRet:this.state.DepSeats}).then(()=>{
+          console.log()
         alert("Flight Updated");
     });
 
@@ -219,7 +219,7 @@ export default class FlightSeatEditor extends Component {
     };
      ButtonClickParent = (e) => {
         const {isDeparture} = this.props;
-        if(isDeparture ==0)
+        if(isDeparture ==1)
           this.departureSeatsClick();
         else
           this.returnSeatsClick();
