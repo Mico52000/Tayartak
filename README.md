@@ -26,7 +26,7 @@ This is a web application built as a project for the Advanced Computer Lab Cours
 
 ### Motivation
 
-The project was built for a university project. We were asked to develop an airline reservation system. We chose Take Off as our website name and we developed both the frontend and backend of the web application.
+The project was built for a university project. We were asked to develop an airline reservation system. We chose Tayartak as our website name and we developed both the frontend and backend of the web application.
 
 ### Build Status
 
