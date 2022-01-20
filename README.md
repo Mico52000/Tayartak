@@ -314,7 +314,7 @@ The React part of the code (front end) uses class components most of the time. F
 5. Run ``npm start`` to start the frontend of the web application.
 6. Go to http://localhost:3000/ and the website will be running!
 
-### API reference
+### API references
 
 
 ### How to Use?
