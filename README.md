@@ -524,8 +524,67 @@ Request Sample :
 }
 
 -------------------------------------------------------------------
+ GET/searchTrip
+  Request:{
+  from: 'ElSeen',
+  to: 'Korea',
+  departureDate: '12-01-2021',
+  numberOfPassengers: '1',
+  cabin: 'business',
+  return: '14-02-2022'
+}
+
+Response:{
+    _id: new ObjectId("61e5bf1af4b890f18ab04a7f"),
+    FlightDate: '12-01-2021',
+    From: 'ElSeen',
+    To: 'Korea',
+    FlightNumber: '123123',
+    NumberOfEconomySeats: 6,
+    NumberOfBusinessSeats: 8,
+    NumberOfFirstSeats: -29,
+    ArrivalTime: '13:00',
+    DepartureTime: '14:00',
+    Seats: [ [Array], [Array], [Array], [Array], [Array], [Array] ],      
+    __v: 0,
+    PriceBusiness: 300,
+    PriceEconomy: 200,
+    PriceFirst: 450
+  }
  
- 
+--------------------------------------------------------------
+
+DELETE/deleteres/:id
+
+
+Request :
+params: { id: '61e89335a32aee218ba2933b' }
+
+---------------------------------------------------------------
+PUT/update
+Request Sample:
+ body: {
+    From: 'sem8',
+    To: 'sem7',
+    FlightDate: '',
+    FlightNumber: '',
+    NumberOfEconomySeats: 0,
+    NumberOfBusinessSeats: 0,
+    NumberOfFirstSeats: 0,
+    ArrivalTime: '',
+    DepartureTime: '',
+    _id: '61e8359fde50cd9316a82b14',
+    PriceEconomy: '',
+    PriceBusiness: '',
+    PriceFirst: ''
+  }
+  
+Response:"Updated
+
+----------------------------------------------------------------
+
+
+
 
 ### How to Use?
 - Admin
