@@ -74,6 +74,7 @@ The React part of the code (front end) uses class components most of the time. F
 
 --Edit his account information.
 
+--Pay For His Reservations
 
 ### Code Examples
 
@@ -315,7 +316,208 @@ The React part of the code (front end) uses class components most of the time. F
 6. Go to http://localhost:3000/ and the website will be running!
 
 ### API references
+PUT/updateuser 
+updates the user information
+Request Sample: {
+  FirstName: 'nerimane',
+  LastName: 'elrefai',
+  Email: 'nerimane.elrefai@gmail.com',
+  Passport: '376487679',
+  Password: '$2b$10$G4K1.y530XaEaJQaBYO8Me/tuOqq2AvF6KP8ZJrFmIO3SCI.AFzvK'}
+Response:"Updated"
+---------
+POST/ChangeParent
+Request Sample: body: {
+    flightId: '61e5bf1af4b890f18ab04a7f',
+    res: '61e89cec7e66ad37f9be6ab1'
+  }
+  
+  
+  Respone:{
+  numseats: 2,
+  from: 'ElSeen',
+  to: 'Korea',
+  price: 800,
+  Rettime: '14-02-2022',
+  retnum: '1241414',
+  retarrt: '15:00',
+  retdept: '13:00',
+  olddepCabin: 'economy',
+  oldretCabin: 'economy',
+  depprice: 200,
+  retprice: 200,
+  oldId: new ObjectId("61e5bf1af4b890f18ab04a7f"),
+  notchanged: '61e5bf56f4b890f18ab04aa5'
+}  
+--------------------------------------------------------
+POST/changeReservation
+Request Sample:
+ body: {
+    bookingId: '61e89cec7e66ad37f9be6ab1',
+    Numseats: 2,
+    oldprice: 800,
+    prevPage: 'http://localhost:3000/user/ChangeParent/61e89cec7e66ad37f9be6ab1/61e5bf1af4b890f18ab04a7f/1',
+    newFlightID: '61e5bf1af4b890f18ab04a7f',
+    oldFlightID: '61e5bf1af4b890f18ab04a7f',
+    IdNotChanged: '61e5bf56f4b890f18ab04aa5',
+    num: '1',
+    oldCabin: 'economy',
+    oldCabinChanged: 'economy',
+    newCabin: 'economy',
+    TotalPrice: 0
+  }
+  ------------------------------------------------------------------------
+  DELETE/delete/:id
+  id is the Flight Id to be deleted by the admin
+  Request Sample :
+  params : 61e5bf1af4b890f18ab04a7f
+  
+  Response Sample :
+  "item deleted"
+  ------------------------------------------------------------------------
+  
+  POST/create-checkout-session
+  
+  Request Sample :
+  body :{
+  prevPage: 'http://localhost:3000/user/bookflight',
+  userId: '61ea196d2e0233906320eb51',
+  from: 'ElSeen',
+  to: 'Korea',
+  selectedFlightIDDep: '61e5bf1af4b890f18ab04a7f',  
+  selectedFlightIDRet: '61e5bf56f4b890f18ab04aa5',  
+  numberOfPassengers: '1',
+  cabin: 'business',
+  totalPrice: 800
+}
 
+Response Sample:
+https://checkout.stripe.com/pay/cs_test_a1KKT4RdNqIbjl5chozYL0D3P3NhT1rXONwXs4dautAUcYAeDkSC8UdRJa#fidkdWxOYHwnPyd1blpxYHZxWjA0TkNJRzVBYkZ8MVBqYk1HME5wYlBLXEhuREpvdVZEclNdXUZIQk9rNTJTY0BQUFNcQn1GbE9EXU5WYnB3bWJDdXVoU0pGSU59VEMzQ2xxb1Z8SHV8PVJ8NTVzbGdDdkFXdScpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8dWAnPyd2bGtiaWBabHFgaCcpJ2BrZGdpYFVpZGZgbWppYWB3dic%2FcXdwYHgl
+---------------------------------------------------------------------------------
+
+GET/reservationsgetBooking
+Request Sample :
+ Query : 61ea196d2e0233906320eb51
+ 
+ Response Sample :
+ [
+  {
+    _id: new ObjectId("61ea19c72e0233906320ec67"),
+    UserId: '61ea196d2e0233906320eb51',
+    DepFlight: '61e5bf1af4b890f18ab04a7f',
+    RetFlight: '61e5bf56f4b890f18ab04aa5',
+    NumSeats: 1,
+    Cabin: 'economy',
+    TotalPrice: 400,
+    CabinDep: 'economy',
+    CabinRet: 'economy',
+    SeatsDep: [],
+    SeatsRet: [],
+    __v: 0
+  },
+  {
+    _id: new ObjectId("61ea1a9893f6d9bd514f3277"),
+    UserId: '61ea196d2e0233906320eb51',
+    DepFlight: '61e5bf1af4b890f18ab04a7f',
+    RetFlight: '61e5bf56f4b890f18ab04aa5',
+    NumSeats: 1,
+    Cabin: 'business',
+    TotalPrice: 800,
+    CabinDep: 'business',
+    CabinRet: 'business',
+    SeatsDep: [],
+    SeatsRet: [],
+    __v: 0
+  }
+]
+---------------------------------------------------------------------------------------
+ 
+ GET/Itinerary/:bookingId
+ bookingId is the id of the reservation to be displayed to the user
+ 
+ Request Sample :
+ params : 61ea1d074ce073acff0bf915
+ 
+ Response Sample :
+ [ [ 9 ], [ 10 ] ]
+ -------------------------------------------------------
+ 
+ GET//session/:session_id
+ 
+ Session_id is the id of the payment session opened by stripe
+ 
+ resquest Sample :
+ params : cs_test_a1ngJFWZgsQiTWoGUC61LEiOJXPQJOJGeESiC4vcd7Cd3IW9ZElUzgL4GU
+ 
+ Response Sample :
+ {
+  id: 'cs_test_a1ngJFWZgsQiTWoGUC61LEiOJXPQJOJGeESiC4vcd7Cd3IW9ZElUzgL4GU',
+  object: 'checkout.session',
+  after_expiration: null,
+  allow_promotion_codes: null,
+  amount_subtotal: 80000,
+  amount_total: 80000,
+  automatic_tax: { enabled: false, status: null },
+  billing_address_collection: null,
+  cancel_url: 'http://localhost:3000/user/bookflight',
+  client_reference_id: null,
+  consent: null,
+  consent_collection: null,
+  currency: 'usd',
+  customer: 'cus_L0DT7lZ9MvOrLD',
+  customer_creation: 'always',
+  customer_details: {
+    email: 'nerimane.elrefai@gmail.com',
+    phone: null,
+    tax_exempt: 'none',
+    tax_ids: []
+  },
+  customer_email: null,
+  expires_at: 1642819182,
+  livemode: false,
+  locale: null,
+  metadata: {
+    DepId: '61e5bf1af4b890f18ab04a7f',
+    RetId: '61e5bf56f4b890f18ab04aa5',
+    userId: '61ea196d2e0233906320eb51',
+    NumSeats: '1',
+    DepFrom: 'ElSeen',
+    DepTo: 'Korea',
+    DepDate: '12-01-2021',
+    DepDTime: '14:00',
+    DepATime: '13:00',
+    DepFlightNumber: '123123',
+    Cabin: 'business',
+    TotalPrice: '800',
+    RetFrom: 'Korea',
+    RetTo: 'ElSeen',
+    RetDate: '14-02-2022',
+    RetDTime: '13:00',
+    RetATime: '15:00',
+    RetFlightNumber: '1241414'
+  },
+  mode: 'payment',
+  payment_intent: 'pi_3KKD2QDgCy4UogHB1xAfqdIu',
+  payment_method_options: {},
+  payment_method_types: [ 'card' ],
+  payment_status: 'paid',
+  phone_number_collection: { enabled: false },
+  recovered_from: null,
+  setup_intent: null,
+  shipping: null,
+  shipping_address_collection: null,
+  shipping_options: [],
+  shipping_rate: null,
+  status: 'complete',
+  submit_type: null,
+  subscription: null,
+  success_url: 'http://localhost:3000/user/success?session_id={CHECKOUT_SESSION_ID}',
+  total_details: { amount_discount: 0, amount_shipping: 0, amount_tax: 0 },
+  url: null
+}
+-------------------------------------------------------------------
+ 
+ 
 
 ### How to Use?
 - Admin
@@ -340,7 +542,7 @@ The React part of the code (front end) uses class components most of the time. F
 
 -- After choosing the flights you will be asked to pay for the reservation and you will be redirected to stripe gateway to pay the requested amount.
 
--- When the payment is completed you will see a summary of your reservation with all the needed details.
+-- When the payment is completed you will have a chance to pick your seats and then view your Ticket.
 
 -- You can also edit your chosen seats or change a different flight for your reservation from your reservations list. You can go there by choosing My Reservations button from the navigation bar.
 
