@@ -325,6 +325,7 @@ Request Sample: {
   Passport: '376487679',
   Password: '$2b$10$G4K1.y530XaEaJQaBYO8Me/tuOqq2AvF6KP8ZJrFmIO3SCI.AFzvK'}
 Response:"Updated"
+
 ---------
 POST/ChangeParent
 Request Sample: body: {
@@ -349,6 +350,7 @@ Request Sample: body: {
   oldId: new ObjectId("61e5bf1af4b890f18ab04a7f"),
   notchanged: '61e5bf56f4b890f18ab04aa5'
 }  
+
 --------------------------------------------------------
 POST/changeReservation
 Request Sample:
@@ -366,6 +368,7 @@ Request Sample:
     newCabin: 'economy',
     TotalPrice: 0
   }
+  
   ------------------------------------------------------------------------
   DELETE/delete/:id
   id is the Flight Id to be deleted by the admin
@@ -374,6 +377,7 @@ Request Sample:
   
   Response Sample :
   "item deleted"
+  
   ------------------------------------------------------------------------
   
   POST/create-checkout-session
@@ -393,6 +397,7 @@ Request Sample:
 
 Response Sample:
 https://checkout.stripe.com/pay/cs_test_a1KKT4RdNqIbjl5chozYL0D3P3NhT1rXONwXs4dautAUcYAeDkSC8UdRJa#fidkdWxOYHwnPyd1blpxYHZxWjA0TkNJRzVBYkZ8MVBqYk1HME5wYlBLXEhuREpvdVZEclNdXUZIQk9rNTJTY0BQUFNcQn1GbE9EXU5WYnB3bWJDdXVoU0pGSU59VEMzQ2xxb1Z8SHV8PVJ8NTVzbGdDdkFXdScpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8dWAnPyd2bGtiaWBabHFgaCcpJ2BrZGdpYFVpZGZgbWppYWB3dic%2FcXdwYHgl
+
 ---------------------------------------------------------------------------------
 
 GET/reservationsgetBooking
@@ -440,6 +445,7 @@ Request Sample :
  
  Response Sample :
  [ [ 9 ], [ 10 ] ]
+ 
  -------------------------------------------------------
  
  GET//session/:session_id
